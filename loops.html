@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="randomName()">Random</button>
+<button onclick="allNames()">All</button>
+<script>
+    const names= ['melissa', 'edgar', 'gabby', 'alex', 'zach', 'matt', 'victor', 'will', 'christian', 'ed', 'marisol'];
+    function randomName() {
+        const pos = Math.floor(Math.random() * names.length);
+        if (names.length === 0) {
+            document.getElementsByTagName('button')[0].disabled = true;
+            return;
+        }
+        const name = names[pos];
+        console.log(name);
+        const el =  document.createElement('h2');
+        el.innerText = name;
+        document.body.appendChild(el);
+        names.splice(pos, 1);
+    }
+    function allNames () {
+        // names.forEach( (name, index) => {
+        //     document.write(`<h2>${index} ${name}</h2>`);
+        // });
+
+        for (let i = 0; i < names.length; i += 2) {
+            console.log(names[i])
+        }
+    }
+</script>
+</body>
+</html>

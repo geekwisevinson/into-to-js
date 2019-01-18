@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    const playerConfig = {
+      height: '25px',
+      width: '25px',
+      backgroundColor: 'green',
+        x: 0,
+        y: 0,
+    };
+    const player = document.createElement('div');
+    document.body.appendChild(player);
+
+
+    function draw() {
+        player.style.height = playerConfig.height;
+        player.style.width = playerConfig.width;
+        player.style.backgroundColor = playerConfig.backgroundColor;
+        player.style.position = 'absolute';
+        player.style.left = playerConfig.x + 'px';
+        player.style.top = playerConfig.y + 'px';
+    }
+
+    setInterval(() => {
+        draw()
+    }, 10);
+
+    document.addEventListener('keydown', (e) => {
+        console.log(e);
+        if (e.code === 'ArrowDown') {
+            playerConfig.y += 10;
+        }
+        if (e.code === 'ArrowUp') {
+            playerConfig.y -= 10;
+        }
+        if (e.code === 'ArrowRight') {
+            playerConfig.x += 10;
+        }
+        if (e.code === 'ArrowLeft') {
+            playerConfig.x -= 10;
+        }
+    })
+</script>
+
+
+</body>
+</html>

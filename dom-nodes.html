@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+
+    const body = document.body;
+    function create( type ) {
+        return document.createElement(type);
+    }
+    function text(el, value) {
+        el.innerText = value;
+    }
+    function html(el, value) {
+        el.innerHTML = value;
+    }
+    function append(el) {
+        body.appendChild(el);
+    }
+
+    const h1 = create('h1');
+    text(h1, '<p>hello world</p>');
+    html(h1, '<p>hello world</p>');
+    append(h1);
+    h1.style.color = 'blue';
+    h1.addEventListener('hover', () => { alert('you clicked me') })
+</script>
+
+</body>
+</html>
