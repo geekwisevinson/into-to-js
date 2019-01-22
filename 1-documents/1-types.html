@@ -3,8 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <title>Types</title>
+    <link rel="stylesheet" href="../shared/css/shared.css">
 </head>
 <body>
+<div id="header"><h1>Types</h1></div>
+
+<div>
+    <h2 class="side-padding">Primitives</h2>
+</div>
+<div class="flex-wrap">
+    <div class="link-list">
+        <h3>Numbers</h3>
+        <div>
+            Integers and decimals
+        </div>
+        <div>
+            <span class="example">1</span>
+        </div>
+    </div>
+    <div class="link-list">
+        <h3>Strings</h3>
+        <div>
+            can be created with
+            <div>
+                <span class="example">'</span>,
+                <span class="example">"</span> or
+                <span class="example">`</span>
+            </div>
+        </div>
+    </div>
+    <div class="link-list">
+        <h3>Boolean</h3>
+        <div>
+            <span class="example">true</span>,
+            <span class="example">false</span>
+        </div>
+    </div>
+    <div class="link-list">
+        <h3>Null</h3>
+        <div>
+            Usually when setting a variable or property to empty.
+        </div>
+    </div>
+    <div class="link-list">
+        <h3>Undefined</h3>
+        <div>
+            When a variable or property does not exist or is not defined with a value.
+        </div>
+    </div>
+</div>
+
+<div>
+    <h2 class="side-padding">Complex</h2>
+</div>
+
+<div class="flex-wrap">
+    <div class="link-list">
+        <h3>Arrays</h3>
+        <div>
+            Can hold multiple values indexed. Do not have to be the same <span class="example">Type</span>
+        </div>
+        <div>
+            <span class="example">[ 1, "1", true, null, undefined, { value: 1 }, [1] ]</span>
+        </div>
+    </div>
+    <div class="link-list">
+        <h3>Objects</h3>
+        <div>
+            Act like arrays in that they can hold multiple values.
+            <div>
+                except that the indexes are named by you.
+            </div>
+            <div>
+                <span class="example">
+                    <pre>
+                        {
+                            name: "Player 1",
+                            power: 9999,
+                            inventory: [ 'shield' ],
+                            style : {
+                                        hat: true,
+                                    }
+                        }
+                    </pre>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
