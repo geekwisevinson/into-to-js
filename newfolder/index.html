@@ -7,13 +7,37 @@
     <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Practice Page 1</title>
+    <title>Shopping app</title>
   <meta name="author" content="name">
   <meta name="description" content="description here">
   <meta name="keywords" content="keywords,here">
-  <link rel="stylesheet" href="stylesheet.css" type="text/css">
   </head>
   <body>
 
+    <input id="newItemInput" type="text"> <placeholder="New Item"><button onClick="addItem()">Submit</button>
+    <ul>
+
+    </ul>
+
+  <script>
+
+    function addItem() {
+      const itemInput = document.getElementById('newItemInput');
+      if (!itemInput.value) {
+        return;
+      }
+      console.log('new item', itemInput.value );
+      const newItem = create();
+      newItem.innerText = itemInput.value;
+      const ul = document.getElementsByTagName('ul')[0];
+      ul.appendChild(newItem);
+      itemInput.value = '';
+    }
+
+    function create() {
+      return document.createElement('li');
+    }
+
+  </script>
   </body>
 </html>
