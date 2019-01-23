@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../shared/css/shared.css">
+</head>
+<body>
+    <div id="header"><h1>DOM: Targeting</h1></div>
+   <p>To get access to an Element(object) the document gives us a few options</p>
+    <div class="flex-wrap">
+        <div class="link-list">
+            <h3 class="example">document.getElementsByTagName()</h3>
+            <p>params: this will take a string of the tag you want to target</p>
+            <div>
+                <span class="example">'div'</span>
+                will get an array like object full of all elements that are <span class="example">div</span>'s
+            </div>
+            <p>
+                <span class="example">document.getElementsByTagName('p')[0]</span>
+
+            </p>
+            <p>will give you access to the first p tag on the page</p>
+        </div>
+
+        <div class="link-list">
+            <h3 class="example">document.getElementsByClassName()</h3>
+            <p>params: this will take a string of the class you want to target</p>
+            <div>
+                <span class="example">'item'</span>
+                will get an array like object full of all elements with a class of <span class="example">item</span>'s
+            </div>
+            <p>
+                <span class="example">document.getElementsByClassName('item')[1]</span>
+           </p>
+            <p>      will give you access to the second element with the class <span class="example">item</span> on the page
+            </p>
+        </div>
+        <div class="link-list">
+            <h3 class="example">document.getElementByID()</h3>
+            <p>params: this will take a string of the id you want to target</p>
+            <div>
+                <p>unlike the methods that start <span class="example">document.getElements</span></p>
+                <p>
+                    this one is singular <span class="example">document.getElement</span>
+                </p>
+                <p>Instead of an array of dom nodes this will be a dom node</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
