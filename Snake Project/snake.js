@@ -1,28 +1,67 @@
 //  * Constants *
 const CANVAS = document.getElementById('canvas');
 const CTX = canvas.getContext('2d');
-const MAX = 625;
 
-class SNAKE_CONFIG {
-    constructor(x, y, w, h, bgc) {
-        this.x = 34;
-        this.y = 34;
-        this.w = '25px';
-        this.h = '25px';
-        this.bgc = 'green';
+function drawCanvas() {
+    CTX.fillStyle = 'skyblue';
+    CTX.fillRect(0, 0, CANVAS.width, CANVAS.height);
+    CTX.strokeStyle = 'black';
+    CTX.lineWidth = 50;
+    CTX.strokeRect(0, 0, CANVAS.width, CANVAS.height);
+}
+
+// * Variables *
+var dx = 0;
+var dy = 0;
+var gameover = false;
+var score = 0;
+//min is used for posistional adjustment
+var min = 34;
+//max is the number of grid squares in the game
+var max = 25;
+
+var snake = { x: 34, y: 34 };
+
+//console.log('Snake.x',snake.x)
+
+var snakeArray = [];
+
+snakeArray.push(snake);
+
+//console.log('SnakeArray[0].x', snakeArray[0].x)
+
+function drawSnake(score) {
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    drawCanvas();
+    for (i = 0; i <= score; i++) {
+        CTX.fillStyle = 'green';
+        CTX.fillRect(snakeArray[i].x - 9, snakeArray[i].y - 9, 25, 25);
+        CTX.strokeStyle = 'lightgreen';
+        CTX.lineWidth = 2;
+        CTX.strokeRect(snakeArray[i].x - 9, snakeArray[i].y - 9, 25, 25);
     }
 }
 
-var snakeArray: SNAKE_CONFIG[] = new SNAKE_CONFIG[MAX];
-
 function snakeGrow(score) {
-    
+    snake = { x: snakeArray[score - 1].x, y: snakeArray[score - 1].y };
+    snakeArray.push(snake);
+    //console.log(score, 'snake', snakeArray[score].x)
 }
 
+function snakeUpdate(score) {
+    for (i = score; i >= 1; i--) {
+        snakeArray[i].x = snakeArray[i - 1].x;
+        snakeArray[i].y = snakeArray[i - 1].y;
+        //console.log('SNAKE ', i, snakeArray[i].x)
+    }
+}
 
-const SNAKE = document.createElement('div');
+function animateSnake(score) {
+    snakeArray[0].x += dx;
+    snakeArray[0].y += dy;
 
-document.body.appendChild(SNAKE);
+}
+
 
 const APPLE_CONFIG = {
     x: 250+34,
@@ -36,52 +75,6 @@ const APPLE = document.createElement('div');
 
 document.body.appendChild(APPLE);
 
-// * Variables *
-var dx = 0;
-var dy = 0;
-var gameover = false;
-var score = 0;
-//min is used for posistional adjustment
-var min = 34;
-//max is the number of grid squares in the game
-var max = 25;
-// * Functions *
-
-function drawCanvas() {
-    CTX.fillStyle = 'skyblue';
-    CTX.fillRect(0, 0, CANVAS.width, CANVAS.height);
-    CTX.strokeStyle = 'black';
-    CTX.lineWidth = 50;
-    CTX.strokeRect(0, 0, CANVAS.width, CANVAS.height);
-}
-
-/*
-function drawSnake() {
-    SNAKE.style.width = SNAKE_CONFIG.w;
-    SNAKE.style.height = SNAKE_CONFIG.h;
-    SNAKE.style.backgroundColor = SNAKE_CONFIG.bgc;
-   // SNAKE.style.border = "solid lightgreen";
-    SNAKE.style.position = 'absolute';
-    SNAKE.style.left = SNAKE_CONFIG.x + 'px';
-    SNAKE.style.top = SNAKE_CONFIG.y + 'px';
-}*/
-
-function drawSnake() {
-    SNAKE.style.width = snakeArray[score].w;
-    SNAKE.style.height = snakeArray[score].h;
-    SNAKE.style.backgroundColor = snakeArray[score].bgc;
-    // SNAKE.style.border = "solid lightgreen";
-    SNAKE.style.position = 'absolute';
-    SNAKE.style.left = snakeArray[score].x + 'px';
-    SNAKE.style.top = snakeArray[score].y + 'px';
-}
-
-function randomInRange(min, max) {
-    APPLE_CONFIG.x = (Math.floor(Math.random() * Math.floor(max - 1)) * max) + min;
-    //console.log(APPLE_CONFIG.x);
-    APPLE_CONFIG.y = (Math.floor(Math.random() * Math.floor(max - 1)) * max) + min;
-}
-
 function drawApple() {
     APPLE.style.width = APPLE_CONFIG.w;
     APPLE.style.height = APPLE_CONFIG.h;
@@ -92,6 +85,14 @@ function drawApple() {
     APPLE.style.left = APPLE_CONFIG.x + 'px';
     APPLE.style.top = APPLE_CONFIG.y + 'px';
 }
+
+
+function randomInRange(min, max) {
+    APPLE_CONFIG.x = (Math.floor(Math.random() * Math.floor(max - 1)) * max) + min;
+    //console.log(APPLE_CONFIG.x);
+    APPLE_CONFIG.y = (Math.floor(Math.random() * Math.floor(max - 1)) * max) + min;
+}
+
 
 function moveUp() {
     dy = -25;
@@ -117,40 +118,57 @@ function stopDX() {
     dx = 0;
 }
 
-function animateSnake() {
-    SNAKE_CONFIG.x += dx;
-    SNAKE_CONFIG.y += dy;
 
-    // * OOB Code *
-    if (SNAKE_CONFIG.x < 34 || SNAKE_CONFIG.x > 634 || SNAKE_CONFIG.y < 34 || SNAKE_CONFIG.y > 634) {
+function checkCollision(score) {
+    // * Out Of Bounds Code *
+    if (snakeArray[0].x < 34 || snakeArray[0].x > 634 || snakeArray[0].y < 34 || snakeArray[0].y > 634) {
         stopDX();
         stopDY();
         gameover = true;
     }
 
-    //console.log(SNAKE_CONFIG.x);
-    //console.log(SNAKE_CONFIG.y);
+    for (i = score; i > 0; i--) {
+        if ((snakeArray[0].x == snakeArray[i].x) && (snakeArray[0].y == snakeArray[i].y)) {
+            stopDX();
+            stopDY();
+            gameover = true;
+        }
+    }
 }
 
-function writeGameOver() {
-    document.write('Game Over');
-}
 
 function detectApple() {
-    if (SNAKE_CONFIG.x === APPLE_CONFIG.x && SNAKE_CONFIG.y === APPLE_CONFIG.y) {
+    if (snakeArray[0].x === APPLE_CONFIG.x && snakeArray[0].y === APPLE_CONFIG.y) {
         //console.log('Apple Detected');
         drawApple();
         score++;
         console.log('Score: ', score);
+        snakeGrow(score);
     }
 }
 
-snakeGrow(score);
+function writeGameOver(score) {
+    document.write('*Game Over* Score: ' + score);
+}
+
+function displayScore(score) {
+    CTX.fillStyle = 'white';
+    CTX.textBaseline = 'middle';
+    CTX.textAlign = 'center';
+    CTX.font = 'normal bold 20px serif';
+
+    CTX.fillText('Score: ' + score, 50, 13);
+}
 
 function main() {
-    drawSnake();
-    animateSnake();
+
     detectApple();
+    animateSnake();
+    checkCollision(score);
+    drawSnake(score);
+    snakeUpdate(score);
+    displayScore(score);
+
     document.addEventListener('keydown', (e) => {
         //console.log(e);
         if (e.code === 'ArrowUp' && dy != 25) {
@@ -188,15 +206,6 @@ interval = setInterval(() => {
     main();
     if (gameover === true) {
         clearInterval(interval);
-        writeGameOver();
+        writeGameOver(score);
     }
 }, 125);
-
-
-//Bounds of the game are 34, 634. Anything over / under is game over
-// * Still needed *
-//apple random generation
-//apple eaten detection
-//snake growth
-//game over for snake self collision
-//score display
