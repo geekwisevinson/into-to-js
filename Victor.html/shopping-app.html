@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <input onkeyup="checkEnter($event)"id="newItemInput"type="placeholder="New Item"><button>Submit</button>
+  <ul></ul>
+  <script>
+    function checkEnter(event){
+      console.log(event'event');
+      if(event.code ==='Enter'){
+        addItem();
+      }
+    }
+    function addItem(){
+      const itemInput = document.getElementById('newItemInput');
+      if (!itemInput.value){
+        return;
+      }
+      console.log('new item',itemInput.value );
+      const newItem = create();
+      const createDelete = createDelete();
+      deleteButton.innerText = 'X';
+      newItem.appendChild(deleteButton);
+      newItem.innerText = itemInput.value;
+      const ul = document.getElementByTagname('ul')[0];
+      ul.appendChild(newItem);
+      itemInput.value = '';
+    }
+
+    function create(){
+      return document.createElement('li');
+    }
+
+    function createDelete() {
+      return document.createElement('button');
+    }
+
+    function deleteItem( button) {
+      console.log('button',button);
+    }
+
+
+  </script>
+</body>
+</html>
