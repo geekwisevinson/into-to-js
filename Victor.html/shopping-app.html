@@ -10,11 +10,14 @@
   <input onkeyup="checkEnter($event)"id="newItemInput"type="placeholder="New Item"><button>Submit</button>
   <ul></ul>
   <script>
+    const submitButton = document.getElementByTagname('')[0];
+    submitButton.addEventListener('click',addItem);
     function checkEnter(event){
-      console.log(event'event');
-      if(event.code ==='Enter'){
-        addItem();
-      }
+      event.code === 'Enter' ? addItem() : console.log('press enter')
+      //console.log(event 'event');
+      //if(event.code ==='Enter'){
+      //  addItem();
+    //  }
     }
     function addItem(){
       const itemInput = document.getElementById('newItemInput');
@@ -24,9 +27,11 @@
       console.log('new item',itemInput.value );
       const newItem = create();
       const createDelete = createDelete();
+      deleteButton.addEventListener('click', deleteitem);
       deleteButton.innerText = 'X';
-      newItem.appendChild(deleteButton);
-      newItem.innerText = itemInput.value;
+      newItem.innerText(deleteButton);
+      newItem.appendChild = itemInput.value;
+
       const ul = document.getElementByTagname('ul')[0];
       ul.appendChild(newItem);
       itemInput.value = '';
@@ -40,8 +45,10 @@
       return document.createElement('button');
     }
 
-    function deleteItem( button) {
-      console.log('button',button);
+    function deleteItem() {
+      console.log('button', this);
+      this.parentNode.remove();
+
     }
 
 
