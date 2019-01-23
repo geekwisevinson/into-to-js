@@ -1,4 +1,4 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF=8">
@@ -25,8 +25,9 @@
         const newItem = create();
         const deleteButton = createDelete();
         deleteButton.innerText = 'X';
-        newItem.appendChild(deleteButton);
         newItem.innerText = itemInput.value;
+        newItem.appendChild(deleteButton);
+        
         const ul = document.getElementsByTagName('ul')[0];
         ul.appendChild(newItem);
         itemInput.value = '';
