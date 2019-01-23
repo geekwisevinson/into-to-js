@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shop</title>
+</head>
+<body>
+
+<input onkeyup="checkEnter($event)" id="newItemInput" type="text" placeholder="New Item"> <button onclick="addItem()">Submit</button>
+
+<ul></ul>
+
+  <script>
+    function checkEnter(event){
+
+      event.code === 'Enter' ? addItem() : console.log('press')
+
+      console.log(event, 'event');
+      if (event.code === 'Enter'){
+        addItem();
+      }
+    }
+    function addItem() {
+      const itemInput = document.getElementById('newItemInput');
+      if (!itemInput.value) {
+        return;
+      }
+      console.log('new item', itemInput.value);
+      const newItem = create();
+      const deleteButton = createDelete();
+      deleteButton.innerText = 'X';
+      newItem.appendChild(deleteButton);
+      newItem.innerText = itemInput.value;
+      const ul = document.getElementsByTagName('ul')[0];
+      ul.appendChild(newItem);
+    }
+
+    function create () {
+      return document.createElement('li')
+    }
+  </script>
+</body>
+</html>
