@@ -14,12 +14,15 @@
   </head>
   <body>
 
-    <input onkeyup="checkEnter()" id="newItemInput" type="text"> <placeholder="New Item"><button onClick="addItem()">Submit</button>
+    <input onkeyup="checkEnter()" id="newItemInput" type="text"> <placeholder="New Item"><button>Submit</button>
     <ul>
 
     </ul>
 
   <script>
+
+    const submitButton = document.getElementsByTagName('button')[0];
+      submitButton.addEventListener
 
     function checkEnter(event) {
       if (event.code === 'Enter')
@@ -36,8 +39,8 @@
       const newItem = create();
       const deleteButton = createDelete();
       deleteButton.innerText = 'X';
-      newItem.appendChild(deleteButton);
       newItem.innerText = itemInput.value;
+      newItem.appendChild(deleteButton);
       const ul = document.getElementsByTagName('ul')[0];
       ul.appendChild(newItem);
       itemInput.value = '';
