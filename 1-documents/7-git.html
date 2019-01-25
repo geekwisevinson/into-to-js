@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../shared/css/shared.css">
+</head>
+<body>
+    <div id="header"><h1>GIT</h1></div>
+   <p></p>
+    <div class="flex-wrap">
+        <div class="link-list">
+           <h3 class="example">git add < file name > </h3>
+            <p>will add a single file</p>
+            <h3 class="example">git add . </h3>
+            <p>will add all files</p>
+        </div>
+        <div class="link-list">
+            <h3 class="example">git commit </h3>
+            <p>will bring up a vim console to input a message</p>
+            <h3 class="example">git commit -m "<span class="special">your message</span>" </h3>
+            <p>will bypass the vim console and use your messages</p>
+        </div>
+
+        <div class="link-list">
+            <h3 class="example">git push </h3>
+            <p>will push your committed work to the branch you are on </p>
+            <h3 class="example">git push <span class="special">-u yourBranch</span> </h3>
+            <p>will push your committed work on your local branch when the upstream has not been set</p>
+        </div>
+
+        <div class="link-list">
+            <h3 class="example">git checkout <span class="special">yourBranch</span> </h3>
+            <p>will move you to the branch you want to switch to</p>
+            <h3 class="example">git checkout <span class="special">-b yourBranch</span> </h3>
+            <p>will create a new branch based off your current branch and switch you to it</p>
+        </div>
+    </div>
+</body>
+</html>
