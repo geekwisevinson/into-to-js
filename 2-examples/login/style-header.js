@@ -1,13 +1,13 @@
 console.log('header', header);
 
 const headerStyle = {
-    fontSize: '24px';,
-    colol: 'pink',
-    display: 'flex';,
-    justifyContent: 'space-around';,
-    backgroundColor: 'green';,
+    fontSize: '24px',
+    color: 'pink',
+    display: 'flex',
+    justifyContent: 'space-around',
+    backgroundColor: 'green',
 };
-// 
+//
 // function copyAllStyles() {
 //       const keys = Objects.keys(headerStyle);
 //       console.log(keys);
