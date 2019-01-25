@@ -4,6 +4,5 @@ function copyAllStyles (element, styleObj) {
     keys.forEach(  key => {
         element.style[key] = styleObj[key];
         console.log('key', key);
-        console.log('ky')
     });
 }
