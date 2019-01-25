@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../shared/css/shared.css">
+</head>
+<body>
+    <div id="header"><h1>DOM: Creating Elements</h1></div>
+    <div class="flex-wrap">
+        <div class="link-list">
+            <h3 class="example">document.creatElement( <span class="special">string</span> )</h3>
+            <p><span class="special">params</span>: this will take a <span class="example">string</span>. The tag you want to create</p>
+            <div>
+                <span class="example">'div'</span>
+                Will return a <span class="example">div</span> element node.
+            </div>
+            <p><span class="special">Note</span>: this will not be enough to view an element</p>
+        </div>
+
+        <div class="link-list">
+            <h3 class="example"><span class="special">parentNode</span>.appendChild(<span class="special">childNode</span>)</h3>
+            <p><span class="special">params</span>: this will take a <span class="example">nodeElement</span> that you want to become the <span class="example">childNode</span> of your <span class="example">parentNode</span></p>
+            <p class="example">
+                const <span class="special">ul</span> = document.createElement('ul'); <br>
+                document.body.appendChild( <span class="special">ul</span> );
+            </p>
+            <p>will create an ul and append it to the body of an html page</p>
+            <p class="example">
+                const <span class="special">li</span> = document.createElement('li'); <br>
+                document.getElementsByTagName('ul')[1].appendChild( <span class="special">li</span> );
+            </p>
+            <p>will create an li and append it to the second ul on an html page</p>
+        </div>
+        <div class="link-list">
+            <h3>Node types</h3>
+            1: Element <br>
+            2: Attr <br>
+            3: text <br>
+
+            <p>
+                Others you can read about here : <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType">Mdn Node.Types</a>
+            </p>
+        </div>
+        <div class="link-list">
+            <h3>Node properties and methods</h3>
+            <p>
+                <span class="example">node.nodeType</span>
+                <div> will return a number associated with the type</div>
+            </p>
+            <p>
+                <span class="example">node.nodeName</span>
+            <div> will return a string associated with the type</div>
+            </p>
+            <p>
+                <span class="example">node.cloneNode( <span class="special">boolean</span> )</span>
+            <div> will clone a node if you pass in <span class="special">true</span> it will clone all its children too.</div>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
