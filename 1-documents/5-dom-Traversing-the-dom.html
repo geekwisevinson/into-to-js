@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../shared/css/shared.css">
+</head>
+<body>
+    <div id="header"><h1>DOM: Traversing the DOM</h1></div>
+   <p>To get access to an Element(object) the document gives us a few options</p>
+    <div class="flex-wrap">
+        <div class="link-list">
+            <h3>going Up</h3>
+            <span class="example">node.parentNode</span>
+            <span class="example">node.parentElement</span>
+            <p>
+                These are identical but the <span class="special">parentElement</span>
+            <div>only returns a node if the parentElement is an element</div>
+            </p>
+            <pre>document.body.parentNode; // the <span class="example">html</span> element
+document.body.parentElement; // the <span class="example">html</span> element
+
+document.documentElement.parentNode; // the document node
+document.documentElement.parentElement; // null
+
+(document.documentElement.parentNode === document);  // true
+(document.documentElement.parentElement === document);  // false
+    </pre>
+            <p>
+                The property can be chained together to keep moving up
+            </p>
+            <p class="example">
+                nodeElement.parentNode.parentNode.parentNode
+            </p>
+            <p>
+                If you kept going you will eventually hit the body element.
+            </p>
+            <p>
+                If you go to far you will get null.
+            </p>
+        </div>
+
+        <!--second list-->
+        <div class="link-list">
+            <h3>going Down</h3>
+            <span class="example">node.childNodes</span>
+            <span class="example">node.children</span>
+            <p>
+                These are identical but the <span class="special">children</span>
+            only return elements in an array.
+            <div>Where as <span class="special">childNodes</span> return all nodes in an array</div>
+            </p>
+
+            <p>
+                <span class="example">childNodes</span> will include text nodes and other non element nodes as well.
+            </p>
+            <p>
+                The property can be chained together to keep moving down
+            </p>
+            <p class="example">
+                nodeElement.children[0].children[0].children[0]
+            </p>
+            <p>
+               will keep returning the first element inside of each element
+            </p>
+            <p>
+                If you go to far you will get null.
+            </p>
+        </div>
+    </div>
+    </div>
+</body>
+</html>

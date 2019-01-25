@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../shared/css/shared.css">
+</head>
+<body>
+    <div id="header"><h1>DOM: Adding Event Listeners</h1></div>
+   <p></p>
+    <div class="flex-wrap">
+        <div class="link-list">
+           <h3 class="example">nodeElement.addEventListener( <span class="special">type</span>, <span class="special">callback</span>)</h3>
+            <p>
+                <span class="special">type</span> is a <span class="example">string</span>
+            </p>
+            <p>
+                <span class="special">callback</span> is the <span class="example">function</span> you want to be called when the event happens.
+            </p>
+            <hr>
+            <p>
+                <span class="special">Note</span>: if you need to access which element is calling the function use the <span class="special example">this</span> keyword.
+
+            </p>
+            <p>
+                <span class="example">document.getElementById('list').children[0].addEventListener('click', removeItem)</span>
+            </p>
+            <p>
+                <span class="example">
+                    <pre>
+                        function removeItem() {
+                            this.remove()
+                        }
+                    </pre>
+                </span>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
