@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>shop</title>
+</head>
+<body>
+  <input onkeyup="checkEnter(event)" id="newItemInput" type="text" Placeholder="New Item"> <button onclick="addItem()">Submit</button>
+  <ul>
+
+  </ul>
+
+  <script>
+    const submitButton = document.getElementsByTagName('button')[0];
+    submitbutton.addEventListener('click')
+    event.code === 'Enter' ? addItem() : console.log ('press enter')
+
+    // function checkEnter(event) {
+    //   console.log(event, 'event');
+    //   if (event.code === 'Enter')
+    //     additem();
+    //
+    // }
+
+    function addItem() {
+      const itemInput = document.getElementById('newItemInput');
+      if (!itemInput.value) {
+        return;
+      }
+
+      console.log('new item' , itemInput.value);
+      const newItem = create();
+      const deletebutton = createDelete();
+
+      deleteButton.innertext = 'X';
+      newItem.innertext = itemInput.value;
+      newItem.appendChild(deletebutton);
+      const ul = document.getElementsByTagName('ul')[0];
+      ul.appendChild('newItem');
+      itemInput.value = ('')
+    }
+
+    function create() {
+      return document.createElement('li');
+    }
+
+    function createdelete() {
+      return document.createElement('button');
+    }
+
+    function deleteItem( button) {
+      console.log ('button' , button);
+    }
+// how to add parameter and event listen 
+  </script>
+</body>
+</html>
