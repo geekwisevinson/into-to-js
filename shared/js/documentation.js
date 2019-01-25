@@ -49,3 +49,10 @@ function css(el) {
     }
     return ret;
 }
+
+function thisTest ()  {
+    const name = 'this test';
+    console.log(this);
+}
+
+thisTest();
