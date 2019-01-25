@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <input onkeyup="checkEnter(event)" id="newItemInput" type="text" placeholder="New Item" /> <button>Submit</button>
+    <ul>
+    </ul>
+    <script>
+        const submitButton = document.getElementsByTagName('button')[0];
+        submitButton.addEventListener('click', addItem);
+
+        function addItem() {
+            const itemInput = document.getElementById('newItemInput');
+
+            if (!itemInput.value) {
+                return;
+            }
+
+            console.log(itemInput.value);
+            const newItem = create();
+            const deleteButton = createDelete();
+            deleteButton.addEventListener('click', deleteItem)
+            deleteButton.innerText = 'X';
+            newItem.innerText = itemInput.value;
+            newItem.appendChild(deleteButton);
+            const ul = document.getElementsByTagName('ul')[0];
+            ul.appendChild(newItem);
+            itemInput.value = '';
+
+        }
+
+        function create() {
+            return document.createElement('li');
+        }
+
+        function createDelete() {
+            return document.createElement('button');
+        }
+
+        function deleteItem() {
+            console.log('button', this);
+            const canDelete = confirm('Are you sure?');
+            if (canDelete) {
+                this.parentNode.remove();
+            }
+
+        }
+
+        function checkEnter(event) {
+            //console.log(event, 'event');
+            //if (event.code === 'Enter') {
+            //  addItem();
+            //}
+            event.code === 'Enter' ? addItem() : console.log('press enter');
+        }
+
+    </script>
+</body>
+</html>
