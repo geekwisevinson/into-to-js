@@ -5,5 +5,3 @@ function copyAllStyles (element, styleObj) {
         element.style[key] = styleObj[key];
     });
 }
-
-c
