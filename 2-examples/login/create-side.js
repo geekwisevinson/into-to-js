@@ -1,9 +1,9 @@
-createElement(type: 'div', document.body, text);
+const side = createElement('div', document.body, 'side');
 
 const sideStyle = {
-  width: '200%',
-  backgroundColor: variables.backgroundColor,
-  height: '100%'
+    width: '20%',
+    backgroundColor: variables.backgroundColor,
+    height: '100%'
 };
 
 copyAllStyles(side, sideStyle);
