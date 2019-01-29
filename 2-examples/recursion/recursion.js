@@ -29,7 +29,7 @@ const page = {
                     border: '1px solid black',
                     backgroundColor: 'cornflowerblue',
                     ['border-radius']: '20px',
-                    listeners: [['click', alerter ]],
+                    listeners: [['click', alerter ], ['mouseenter', mouseEnter], ['mouseout', mouseOut ]],
                 },
             },
 
@@ -93,4 +93,26 @@ function alerter() {
         const img = document.getElementsByTagName('img')[0];
         document.body.appendChild(img)
     })
+}
+
+function mouseEnter () {
+    this.style.backgroundColor = 'blue';
+    const img = document.getElementsByTagName('img')[0];
+    img.myAnimation = img.animate([
+        // keyframes
+        { transform: 'translateX(0px)' },
+        { transform: 'translateX(-400px)' }
+    ], {
+        // timing options
+        duration: 9000,
+        iterations: Infinity
+
+    });
+    console.log('img', img);
+}
+
+function mouseOut () {
+    this.style.backgroundColor = 'red';
+    const img = document.getElementsByTagName('img')[0];
+    img.myAnimation.reverse();
 }
