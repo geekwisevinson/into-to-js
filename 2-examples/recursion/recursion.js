@@ -22,13 +22,14 @@ const page = {
             ['button-container']: {
                 ['grid-column']: '9',
                 ['grid-row']: '2 / span 1',
-                overflow: 'auto',
+                overflow: 'visible',
                 ['login-button']: {
                     text: 'push me',
                     textAlign: 'center',
                     border: '1px solid black',
                     backgroundColor: 'cornflowerblue',
                     ['border-radius']: '20px',
+                    type: 'button',
                     listeners: [['click', alerter ], ['mouseenter', mouseEnter], ['mouseout', mouseOut ]],
                 },
             },
