@@ -1,10 +1,10 @@
 console.log('header', header);
 const headerStyle = {
-    fontSize: '24px',
+    fontSize: variables.fontSize,
     color: 'blue',
     display: 'flex',
     justifyContent: 'space-around',
-    backgroundColor: 'red'
+    backgroundColor: variables.backgroundColor,
 };
 
 

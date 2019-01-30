@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const header = document.createElement('div');
 const loginButton = document.createElement('button');
 loginButton.innerText = "This button belongs to Edgar";
@@ -10,3 +11,7 @@ console.log(header);
 
 
 console.log(header.style);
+=======
+const header = createElement( 'div', document.body, 'hello');
+const loginButton = createElement('button', header, 'push')
+>>>>>>> master
