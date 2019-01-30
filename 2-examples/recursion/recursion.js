@@ -3,6 +3,10 @@ const page = {
     body: {
         header: {
             height: '200px',
+            backgroundColor: "yellow",
+            display: 'grid',
+            ['grid-template-columns']: 'repeat(10, 1fr)',
+            ['grid-template-rows']: 'repeat(3, 1fr)',
             title: {
                 text: 'hello',
                 border: '1px solid black',
@@ -15,25 +19,34 @@ const page = {
                 width: '200px',
                 attr: [['src', 'https://wallpaperbrowse.com/media/images/3848765-wallpaper-images-download.jpg']],
             },
-            ['login-button']: {
-              text: 'push me',
-                textAlign: 'center',
-                border: '1px solid black',
-                backgroundColor: 'cornflowerblue',
+            ['button-container']: {
                 ['grid-column']: '9',
-                ['grid-row']: '2 / span',
-                ['border-radius']: '20px',
-                listeners: [['click', alerter ]],
+                ['grid-row']: '2 / span 1',
+                overflow: 'visible',
+                ['login-button']: {
+                    text: 'push me',
+                    textAlign: 'center',
+                    border: '1px solid black',
+                    backgroundColor: 'cornflowerblue',
+                    ['border-radius']: '20px',
+                    type: 'button',
+                    listeners: [['click', alerter ], ['mouseenter', mouseEnter], ['mouseout', mouseOut ]],
+                },
             },
-            backgroundColor: "yellow",
-            display: 'grid',
-            ['grid-template-columns']: 'repeat(10, 1fr)',
-            ['grid-template-rows']: 'repeat(3, 1fr)',
+
 
         },
         backgroundColor: "cornflowerblue",
         color: 'white',
-        margin: '0px'
+        margin: '0px',
+        height: '100%',
+        main: {
+            backgroundColor: 'orange',
+            'text-input': {
+                type: 'input',
+                attr: [['type', 'number']],
+            },
+        }
     }
 };
 createElements({el: document.body, obj: page.body});
@@ -57,7 +70,7 @@ function createElements( { el, obj }) {
                 el.style[key] = obj[key];
             }
         } else if (Array.isArray(obj[key])) {
-            if (key === 'listener') {
+            if (key === 'listeners') {
                 obj[key].forEach( item => {
                     el.addEventListener(item[0], item[1]);
                 });
@@ -77,4 +90,30 @@ function createElements( { el, obj }) {
 
 function alerter() {
     alert('hello');
+    setTimeout( () => {
+        const img = document.getElementsByTagName('img')[0];
+        document.body.appendChild(img)
+    })
+}
+
+function mouseEnter () {
+    this.style.backgroundColor = 'blue';
+    const img = document.getElementsByTagName('img')[0];
+    img.myAnimation = img.animate([
+        // keyframes
+        { transform: 'translateX(0px)' },
+        { transform: 'translateX(-400px)' }
+    ], {
+        // timing options
+        duration: 9000,
+        iterations: Infinity
+
+    });
+    console.log('img', img);
+}
+
+function mouseOut () {
+    this.style.backgroundColor = 'red';
+    const img = document.getElementsByTagName('img')[0];
+    img.myAnimation.reverse();
 }
