@@ -1,6 +1,6 @@
 const header = document.createElement('div');
 const loginButton = document.createElement('button');
-loginButton.innerText = 'Login';
+loginButton.innerText = "This button belongs to Edgar";
 header.appendChild(loginButton);
 const headerText = document.createTextNode('hello World!');
 header.appendChild(headerText);
