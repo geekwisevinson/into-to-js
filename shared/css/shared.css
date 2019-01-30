@@ -1,0 +1,65 @@
+body {
+    margin: 0;
+}
+#header {
+    background-color: aqua;
+    display: flex;
+    justify-content: center;
+}
+
+.link-list {
+    margin: 24px;
+    display: inline-block;
+    border: 1px solid grey;
+    padding: 25px;
+}
+
+.link-list a {
+    display: block;
+    margin: 4px;
+}
+
+.example {
+    background-color: bisque;
+    padding: 4px;
+    margin: 4px;
+    display: inline-block;
+}
+
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.side-padding {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.vert-padding {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+
+.center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.top-space {
+    margin-top: 12px;
+}
+
+.basic-padding {
+    padding: 1em;
+}
+
+p {
+    padding-left: .4em;
+    padding-right: .4em;
+}
+
+.special {
+    color: red;
+}
