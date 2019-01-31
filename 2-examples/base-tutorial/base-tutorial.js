@@ -6,7 +6,7 @@ lines
  */
 
 //SECTION Javascript var declarations
-var varString = 'my string variable';
+var varString = new String('my string variable');
 var varNumber = 1;
 var varBoolean = true;
 var varObj = {
@@ -35,6 +35,16 @@ console.log(varStringNew instanceof String);
 console.log(varNumberNew instanceof Number);
 console.log(varObj instanceof Object);
 console.log(varArray instanceof Array);
+console.log('array', Array.isArray(varArray));
+
+
+function Dog() {
+    var legs = 4;
+}
+
+var beagle = new Dog();
+console.log(typeof beagle);
+console.log(beagle instanceof Dog);
 
 function Dog() {
   var legs = 4;
@@ -97,11 +107,11 @@ console.log( 6 / 2);
 
 // modulus (division remainder)
 console.log( 7 % 5);
-
+console.log( 7 % 5);
 // increment
 var testNumberA = 0;
-console.log( testNumberA++);
-console.log( testNumberA);
+var newNumber = ++testNumberA;
+console.log( newNumber);
 // decrement
 console.log( testNumberA--);
 console.log( testNumberA);
@@ -117,6 +127,7 @@ console.log( testNumberA = testNumberB);
 console.log( testNumberA += testNumberB);
 console.log( testNumberA -= testNumberB);
 console.log( testNumberA *= testNumberB);
+console.log( testNumberA = testNumberA + testNumberB);
 console.log( testNumberA /= testNumberB);
 console.log( testNumberA %= testNumberB);
 
@@ -158,7 +169,7 @@ function cantBuy() {
     return 'cantBuy';
 }
 console.log(testAge);
-
+var test = '';
 var varAnd = (1 + 1 === 2)  && (1 + 3 === 4);
 var varOr = (1 + 1 === 2)  || (1 + 3 === 4);
 
@@ -167,6 +178,7 @@ var temp = {
     name: 'tempName',
     age: 1,
 };
+delete temp;
 console.log(temp);
 delete temp.name;
 console.log(temp);
@@ -180,3 +192,8 @@ console.log(1 in inArray);
 console.log(4 in inArray);
 console.log( 'test' in inObject);
 console.log( 'otherValue' in inObject);
+<<<<<<< HEAD
+=======
+/*
+*/
+>>>>>>> master
