@@ -4,7 +4,6 @@
 comment
 lines
  */
-/*
 
 //SECTION Javascript var declarations
 var varString = 'my string variable';
@@ -36,6 +35,14 @@ console.log(varStringNew instanceof String);
 console.log(varNumberNew instanceof Number);
 console.log(varObj instanceof Object);
 console.log(varArray instanceof Array);
+
+function Dog() {
+  var legs = 4;
+}
+
+var beagle = new Dog();
+console.log(typeof beagle)
+console.log(beagle instanceof Dog);
 
 
 const constString = 'my string const';
@@ -173,4 +180,3 @@ console.log(1 in inArray);
 console.log(4 in inArray);
 console.log( 'test' in inObject);
 console.log( 'otherValue' in inObject);
-*/
