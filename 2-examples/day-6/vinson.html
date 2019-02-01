@@ -6,21 +6,12 @@
 </head>
 <body>
 <script>
-    function createElement( {type, parent, text} ) {
-        const el = document.createElement(type);
-        parent.appendChild(el);
-        if ( text) {
-            el.appendChild(document.createTextNode(text))
-        }
-        return el;
-    }
-    createElement({type: 'vinson', parent: document.body, text: 'quiz list'});
     const body = document.body;
-    const header = createElement({type: 'h1', parent: document.body, text: 'Quiz List'});
+    const quizzes = [];
+
     const newQuizName = createElement({type: 'input', parent: document.body});
     newQuizName.setAttribute('placeholder', 'New Quiz Name')
     const newQuizButton = createElement({type: 'button', parent: body, text: 'New Quiz'});
-    const quizzes = [];
     newQuizButton.addEventListener('click', newQuiz);
 
     function newQuiz() {
@@ -30,9 +21,24 @@
         const answerInput = createElement({type: 'input', parent: quiz});
         answerInput.setAttribute('placeholder', 'Answer');
         const newQA = createElement({type: 'button', parent: quiz, text: 'New QA' });
+        newQA.questionInput = questionInput;
+        newQA.answerInput = answerInput;
+        newQA.quiz = quiz;
         quizzes.push(quiz);
-        console.log(quizzes);
+        newQA.addEventListener( 'click', newQAAction);
         return quiz;
+    }
+    function newQAAction() {
+        createElement({type: 'div', parent: this.parentNode, text: this.questionInput.value});
+        createElement({type: 'div', parent: this.quiz, text: this.answerInput.value});
+    }
+    function createElement( {type, parent, text} ) {
+        const el = document.createElement(type);
+        parent.appendChild(el);
+        if ( text) {
+            el.appendChild(document.createTextNode(text))
+        }
+        return el;
     }
 </script>
 </body>
