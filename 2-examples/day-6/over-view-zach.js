@@ -1,3 +1,3 @@
-function createEl() {
-
+function createEl(type, text) {
+    document.createElement(type);
 }
