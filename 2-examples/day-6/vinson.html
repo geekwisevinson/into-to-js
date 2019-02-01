@@ -5,6 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-
+<script>
+    function createElement( {type, parent, text} ) {
+        const el = document.createElement(type);
+        parent.appendChild(el);
+        el.appendChild(document.createTextNode(text))
+    }
+    createElement({type: 'vinson', parent: document.body, text: 'quiz list'});
+</script>
 </body>
 </html>
