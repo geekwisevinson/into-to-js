@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Http</title>
+</head>
+<body>
+    <script>
+        const Person = function (name) {
+            this.name = name;
+        };
+
+        Person.prototype = {
+            eat() {
+                console.log(this.name + ' is eating');
+            }
+        };
+
+        const Teacher = function (name, city) {
+            Person.call(this, name);
+            this.city = city;
+        };
+        Teacher.prototype = Object.create(Person.prototype);
+
+        const v = new Teacher('v', 'fresno');
+        console.log(v);
+        v.eat();
+    </script>
+</body>
+</html>
