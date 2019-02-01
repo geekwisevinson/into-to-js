@@ -7,9 +7,13 @@
     <title>day 6</title>
 </head>
 <body>
-<script> function createEl(type,text) {
-    document.createElement(type)
+<script> function createEl(type, parent, text) {
+    const el = document.createElement(type);
+    parent.appendChild(el);
+    el.appendChild(document.createTextMode(text))
 }
+
+createElement({type: 'div', Parent: document.body, text:'quiz list'});
 </script>
     
 </body>
