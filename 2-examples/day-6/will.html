@@ -5,11 +5,16 @@
     <title>day 6</title>
 </head>
 <body>
+  <h1 align="center">My page by Will</h1>
+  <p>Please visit my page: <a href="http://www.riker17.com" target="_blank">Riker17.com</a></p>
 <script>
 
-function createEl(type, text) {
-  document.createElement(type);
+function createEl( {type, parent, text} ) {
+  const el = document.createElement(type);
+  parent.appendChild(el);
+  el.appendChild(document.createTextNode(text))
 }
+createElement({type: 'div', parent: document.body, text: 'quiz list'});
 
 </script>
 </body>
