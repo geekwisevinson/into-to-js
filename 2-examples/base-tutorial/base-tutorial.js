@@ -4,7 +4,7 @@
 comment
 lines
  */
-/*
+
 
 //SECTION Javascript var declarations
 var varString = 'my string variable';
@@ -25,7 +25,7 @@ console.log(typeof varBoolean);
 console.log(typeof varObj);
 console.log(typeof varFunction);
 console.log(typeof varArray);
-
+/*
 //SECTION Javascript instanceof Operators
 console.log('instanceof');
 console.log(varString instanceof String);
