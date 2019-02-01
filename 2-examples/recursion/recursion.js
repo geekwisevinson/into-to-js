@@ -3,13 +3,10 @@ const page = {
     body: {
         header: {
             height: '200px',
-<<<<<<< HEAD
-=======
             backgroundColor: "yellow",
             display: 'grid',
             ['grid-template-columns']: 'repeat(10, 1fr)',
             ['grid-template-rows']: 'repeat(3, 1fr)',
->>>>>>> master
             title: {
                 text: 'hello',
                 border: '1px solid black',
@@ -22,22 +19,6 @@ const page = {
                 width: '200px',
                 attr: [['src', 'https://wallpaperbrowse.com/media/images/3848765-wallpaper-images-download.jpg']],
             },
-<<<<<<< HEAD
-            ['login-button']: {
-              text: 'push me',
-                textAlign: 'center',
-                border: '1px solid black',
-                backgroundColor: 'cornflowerblue',
-                ['grid-column']: '9',
-                ['grid-row']: '2 / span',
-                ['border-radius']: '20px',
-                listeners: [['click', alerter ]],
-            },
-            backgroundColor: "yellow",
-            display: 'grid',
-            ['grid-template-columns']: 'repeat(10, 1fr)',
-            ['grid-template-rows']: 'repeat(3, 1fr)',
-=======
             ['button-container']: {
                 ['grid-column']: '9',
                 ['grid-row']: '2 / span 1',
@@ -53,14 +34,10 @@ const page = {
                 },
             },
 
->>>>>>> master
 
         },
         backgroundColor: "cornflowerblue",
         color: 'white',
-<<<<<<< HEAD
-        margin: '0px'
-=======
         margin: '0px',
         height: '100%',
         main: {
@@ -70,7 +47,6 @@ const page = {
                 attr: [['type', 'number']],
             },
         }
->>>>>>> master
     }
 };
 createElements({el: document.body, obj: page.body});
@@ -94,11 +70,7 @@ function createElements( { el, obj }) {
                 el.style[key] = obj[key];
             }
         } else if (Array.isArray(obj[key])) {
-<<<<<<< HEAD
-            if (key === 'listener') {
-=======
             if (key === 'listeners') {
->>>>>>> master
                 obj[key].forEach( item => {
                     el.addEventListener(item[0], item[1]);
                 });
@@ -118,8 +90,6 @@ function createElements( { el, obj }) {
 
 function alerter() {
     alert('hello');
-<<<<<<< HEAD
-=======
     setTimeout( () => {
         const img = document.getElementsByTagName('img')[0];
         document.body.appendChild(img)
@@ -146,5 +116,4 @@ function mouseOut () {
     this.style.backgroundColor = 'red';
     const img = document.getElementsByTagName('img')[0];
     img.myAnimation.reverse();
->>>>>>> master
 }

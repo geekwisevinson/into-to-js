@@ -3,8 +3,7 @@
 /*
 comment
 lines
- */
-/*
+
 
 //SECTION Javascript var declarations
 var varString = 'my string variable';
@@ -173,4 +172,3 @@ console.log(1 in inArray);
 console.log(4 in inArray);
 console.log( 'test' in inObject);
 console.log( 'otherValue' in inObject);
-*/
