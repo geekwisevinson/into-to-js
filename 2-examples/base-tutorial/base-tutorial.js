@@ -18,7 +18,7 @@ var varFunction = function () {
 };
 var varArray = ['test'];
 
-//SECTION Javascript typeof Operators
+//SECTION Javascript typeof Operators describes 
 console.log(typeof varString);
 console.log(typeof varNumber);
 console.log(typeof varBoolean);
