@@ -17,7 +17,7 @@ function createEl( {type, parent, text} ) {
   }
   return el;
 }
-createElement({type: 'will', parent: document.body, text: 'quiz list'});
+createElement({type: 'div', parent: document.body, text: 'quiz list'});
 
 const header = createElement({type: 'h1', parent: document.body, text: Quiz List});
 const newQuizName = createElement({type: 'input', parent: document.body});
@@ -28,6 +28,10 @@ const quizzes = [];
 
 function newQuiz() {
   const quiz = createElement({type: 'div', parent: body, text: newQuizName.value});
+  const questionInput = createElement({type: 'input', parent: quiz});
+  questionInput.setAttribute('placeholder', 'Question');
+  const answerInput = createElement({type: 'input', parent: quiz});
+  answerInput.setAttribute('placeholder', 'Answer');
   const newQA = createElement({type: 'button', parent: quiz, text: 'New QA' });
   quizzes.push(quiz);
   console.log(quizzes);
