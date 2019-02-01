@@ -12,9 +12,27 @@
 function createEl( {type, parent, text} ) {
   const el = document.createElement(type);
   parent.appendChild(el);
-  el.appendChild(document.createTextNode(text))
+  if ( text) {
+    el.appendChild(document.createTextNode(text))
+  }
+  return el;
 }
-createElement({type: 'div', parent: document.body, text: 'quiz list'});
+createElement({type: 'will', parent: document.body, text: 'quiz list'});
+
+const header = createElement({type: 'h1', parent: document.body, text: Quiz List});
+const newQuizName = createElement({type: 'input', parent: document.body});
+newQuizName.setAttribute('placeholder', 'New Quiz Name')
+const newQuizButton = createElement({type: 'button', parent: body, text: 'New Quiz'});
+const quizzes = [];
+  newQuizButton.addEventListener('click', newQuiz);
+
+function newQuiz() {
+  const quiz = createElement({type: 'div', parent: body, text: newQuizName.value});
+  const newQA = createElement({type: 'button', parent: quiz, text: 'New QA' });
+  quizzes.push(quiz);
+  console.log(quizzes);
+  return quiz;
+}
 
 </script>
 </body>
