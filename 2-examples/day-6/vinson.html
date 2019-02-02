@@ -2,42 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Quiz</title>
+    <link rel="stylesheet" href="vinson.css">
 </head>
 <body>
 <script>
+    // Reason: we used the body of the page a lot
+    // Action: we save it to a variable
     const body = document.body;
-    const quizzes = [];
-
-    const newQuizName = createElement({type: 'input', parent: document.body});
-    newQuizName.setAttribute('placeholder', 'New Quiz Name')
+    // Reason: we need a place to save all of our quizzes
+    // Action: we create an array and save it to a variable
+    const newQuizNameInput = createElement({type: 'input', parent: body });
+    // Reason: Users need to know what the input is for
+    // Action: We give it text for the placeholder attribute
+    newQuizNameInput.setAttribute('placeholder', 'New Quiz Name');
+    // Reason: Users need a way to submit a new quiz
+    // Action: We make a button to and put it on the page
     const newQuizButton = createElement({type: 'button', parent: body, text: 'New Quiz'});
+    // Reason: We need a way to tell the button what to do
+    // Action: We add a listener for a click and we run newQuiz function
     newQuizButton.addEventListener('click', newQuiz);
-
+    // Reason: we need to define the function to run when some presses click
+    // Action: we create a function declaration
     function newQuiz() {
-        const quiz = createElement({type: 'div', parent: body, text: newQuizName.value});
+        // Reason: we need to create an element that we can show our new quiz
+        // Action: we create a div to hold the quiz view
+        const quiz = createElement({type: 'div', parent: body});
+        // Reason: Users need a way to identify each quiz
+        // Action: we put what they typed in the input in an h1 and place it in the quiz
+        createElement({type: 'h1', parent: quiz, text: newQuizNameInput.value});
+        // Reason: after the input is used we should clear it
+        // Action: set the value of the input to empty string
+        newQuizNameInput.value = '';
+        // Reason: we may want to style the quiz
+        // Action: give the element a class of quiz
+        quiz.classList.add('quiz');
+        // Reason: in quiz view Users need to write a question
+        // Action: we create an input and place it in the quiz div
         const questionInput = createElement({type: 'input', parent: quiz});
+        // Reason: Users need a way to know what the input is for
+        // Action: we set the placeholder value to the text "Question"
         questionInput.setAttribute('placeholder', 'Question');
+        // Reason: in that view Users need to write the answer to the  question
+        // Action: we create an input and place it in the quiz div
         const answerInput = createElement({type: 'input', parent: quiz});
+        // Reason: Users need a way to know what the input is for
+        // Action: we set the placeholder value to the text "Answer"
         answerInput.setAttribute('placeholder', 'Answer');
-        const newQA = createElement({type: 'button', parent: quiz, text: 'New QA' });
-        newQA.questionInput = questionInput;
-        newQA.answerInput = answerInput;
-        newQA.quiz = quiz;
-        quizzes.push(quiz);
+        // Reason: Users need a place to submit the question and answer combination
+        // Action: we create a button and place it in the the quiz div
+        const newQAButton = createElement({type: 'button', parent: quiz, text: 'New QA' });
+        // Reason: We might as well save the input and quiz references for later
+        // Action: we save them to the quiz button
+        newQAButton.questionInput = questionInput;
+        newQAButton.answerInput = answerInput;
+        newQAButton.quiz = quiz;
+        // Reason: we need to know tell the button what to do
+        // Action: we create a listener for click and we run our newQAAction function
         newQA.addEventListener( 'click', newQAAction);
+        // Reason: In case we need to do more work to the quiz
+        // Action: we return its reference
         return quiz;
     }
+    // Reason: we need a function for when a User clicks the new QA button
     function newQAAction() {
+        // Note: the two createElement examples, the parent refers to the same element
+        // Reason: we need to display our new question in the quiz
+        // Action: we add a div to the quiz which is the parent of the button (the button is "this" here)
         createElement({type: 'div', parent: this.parentNode, text: this.questionInput.value});
+        // Reason: we need to display our new question in the quiz
+        // Action: instead of trying to traverse up the dom tree we used the saved property form earlier
         createElement({type: 'div', parent: this.quiz, text: this.answerInput.value});
+        // Reason: after the input is used we should clear it
+        // Action: set the value of the input to empty string
+        this.questionInput.value = '';
+        // Reason: after the input is used we should clear it
+        // Action: set the value of the input to empty string
+        this.answerInput.value = '';
     }
+    // Reason: we used the documents methods createElement and appendChild and addTextNode a lot
+    // Action: create a function that does all three
+    // Note: this function takes 1 parameter which is an object with three properties
     function createElement( {type, parent, text} ) {
+        // we create an element of the provided type
         const el = document.createElement(type);
+        // we append it to the parent
         parent.appendChild(el);
+        // we check if text is passed in
         if ( text) {
+            // if it is we create a node and put it in the el
             el.appendChild(document.createTextNode(text))
         }
+        // Reason: we may need to do more work with the element
+        // Action: we return our new element
         return el;
     }
 </script>
