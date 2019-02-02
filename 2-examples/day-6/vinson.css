@@ -1,0 +1,34 @@
+input, button {
+    font-size: 1.2em;
+}
+.quiz {
+    border: 1px solid black;
+    padding: .4em;
+    display: inline-block;
+    vertical-align: text-top;
+
+}
+.quiz div:nth-child(odd){
+    border: 1px solid black;
+    padding: 1em;
+    border-bottom: 0 solid green;
+    margin-top: 1em;
+
+}
+.quiz div:nth-child(odd)::before {
+    content: "Q - ";
+}
+.quiz div:nth-child(even){
+    border: 1px solid black;
+    padding: 1em;
+    border-top: 0 solid green;
+}
+.quiz div:nth-child(even)::before {
+    content: "A - ";
+}
+h1 {
+    margin: 1px;
+}
+body > button {
+    display: block;
+}
