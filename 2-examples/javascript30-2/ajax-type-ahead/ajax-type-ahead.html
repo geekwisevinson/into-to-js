@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax Type Ahead</title>
+</head>
+<body>
+
+
+<script>
+    const endpoint = `https://jsonplaceholder.typicode.com/users`;
+    const table = document.createElement('table');
+    document.body.appendChild(table);
+    const tr = document.createElement('tr');
+    table.appendChild(tr);
+    const thName = document.createElement('th');
+    thName.innerText = 'Name';
+    tr.appendChild(thName);
+    const thEmail = document.createElement('th');
+    thEmail.innerText = 'Email';
+    tr.appendChild(thEmail);
+
+
+    fetch(endpoint)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(myJson) {
+            console.log(myJson);
+            const users = [...myJson].filter( item => item.name.includes('i'));
+            users.forEach( user => {
+                const userTr = document.createElement('tr');
+                table.appendChild(userTr);
+                const userNameTd = document.createElement('td');
+                userTr.appendChild(userNameTd);
+                userNameTd.innerText = user.name;
+                const userEmailTd = document.createElement('td');
+                userEmailTd.innerText = user.email;
+                userTr.appendChild(userEmailTd);
+            })
+        });
+</script>
+</body>
+</html>
