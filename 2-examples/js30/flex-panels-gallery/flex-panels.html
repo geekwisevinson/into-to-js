@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--.home-page.container.clearfix.news-article>.box-round>.cn.tl+.cn.tr+.br-title>span^.br-content>cfoutput-->
+<!--<div class="home-page container clearfix news-article">-->
+<!--<div class="box-round">-->
+<!--<div class="cn tl"></div>-->
+<!--<div class="cn tr"></div>-->
+<!--<div class="br-title"><span></span></div>-->
+<!--<div class="br-content">-->
+<!--<cfoutput></cfoutput>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        font-size: 2em;
+    }
+    .panels {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+    .panel {
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        transition: all .3s ease;
+    }
+    .panel1 {
+        background: red;
+    }
+    .panel2 {
+        background: orange;
+    }
+    .panel3 {
+        background: yellow;
+    }
+    .panel4 {
+        background: green;
+    }
+    .panel5 {
+        background: blue;
+    }
+
+    .panel > * {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        transition: all .3s ease;
+    }
+
+    .panel > *:first-child {
+        transform: translateY(-100%);
+    }
+    .panel.open-active > *:first-child {
+        transform: translateY(0%);
+    }
+    .panel > *:last-child {
+        transform: translateY(100%);
+    }
+    .panel.open-active > *:last-child {
+        transform: translateY(0%);
+    }
+
+    .panel.open {
+        flex: 5;
+        color: white;
+    }
+</style>
+
+<div class="panels">
+    <div class="panel panel1">
+        <p>live</p>
+        <p>laugh</p>
+        <p>love</p>
+    </div>
+    <div class="panel panel2">
+        <p>live</p>
+        <p>laugh</p>
+        <p>love</p>
+    </div>
+    <div class="panel panel3">
+        <p>live</p>
+        <p>laugh</p>
+        <p>love</p>
+    </div>
+    <div class="panel panel4">
+        <p>live</p>
+        <p>laugh</p>
+        <p>love</p>
+    </div>
+    <div class="panel panel5">
+        <p>live</p>
+        <p>laugh</p>
+        <p>love</p>
+    </div>
+</div>
+
+<script>
+    const panels = document.querySelectorAll('.panel');
+    function toggleOpen () {
+        this.classList.toggle('open');
+    }
+    function toggleActive (event) {
+        console.log('e', event.propertyName);
+        if (event.propertyName.includes('flex')) {
+            this.classList.toggle('open-active');
+        }
+    }
+    panels.forEach( panel => {
+        panel.addEventListener('click', toggleOpen);
+        panel.addEventListener('transitionend', toggleActive)
+    })
+</script>
+</body>
+</html>
