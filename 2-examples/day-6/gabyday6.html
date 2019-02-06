@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>day 6</title>
+</head>
+<body>
+<script>
+  function createElement( {type, parent, text} ) {
+    const el = document.createElement( type );
+    parent.appendChild(el);
+    if ( text) {
+      el.appendChild(document.createTextNode(text))
+    }
+    return el;
+  }
+  createElement({type: 'div', parent: document.body, text: 'quiz list'});
+  const body = document.body;
+  const header = createElement({type: 'h1', parent: document.body, text: 'Quiz List'});
+  const newQuizName = createElement({type: 'input', parent: document.body})
+  newQuizName.setAttribute('placeholder', 'New Quiz Name')
+  const newQuizButton = createElement({type: 'button', parent: body, text: 'New Quiz'});
+  const quizzes = [];
+  newQuizButton.addEventListener('click', newQuiz);
+
+  function newQuiz() {
+    const quiz = createElement({type: 'div', parent: body, text: newQuizName.value});
+    const questionInput = createElement({type: 'input', parent: quiz});
+    questionInput.setAttribute('placeholder', 'Question');
+    const answerInput = createElement({type: 'input', parent: quiz});
+    answerInput.setAttribute('placeholder', 'Answer');
+    const newQA = createElement({type: 'button', parent: quiz, text: 'New QA'})
+    newQA.questionInput = questionInput;
+    newQA.answerInput = answerInput;
+    newQA.quiz = quiz;
+    quizzes.push(quiz);
+    console.log(quizzes);
+    newQA.addEventListener('click', newQAAction);
+    return quiz;
+  }
+  console.log('this', this);
+  function newQAAction() {
+    console.log('this new qa', this);
+    console.log(this.questionInput);
+    console.log(this.parentNode);
+    createElement({type: 'div', parent: this.parentNode, text: this.questionInput.value });
+    createElement({type: 'div', parent: this.quiz, text: this.answerInput.value });
+    //
+  }
+</script>
+</body>
+</html>

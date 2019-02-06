@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Http</title>
+</head>
+<body>
+    <script>
+        const Person = function (name) {
+            this.name = name;
+        };
+
+        Person.prototype = {
+            eat() {
+                console.log(this.name + ' is eating');
+            }
+        };
+
+        const Teacher = function (name, city) {
+            Person.call(this, name);
+            this.city = city;
+            this.moveCity = function(location) {
+                this.city = location;
+                console.log('this teacher moved to ', location);
+            }
+        };
+        Teacher.prototype = new Person();
+
+        const MathTeacher = function(name, city, grade) {
+            Teacher.call(name, city);
+            this.grade = grade;
+            this.changeGrade = function(p_grade) {
+                this.grade = p_grade;
+                console.log('changed grade to', p_grade)
+            }
+        };
+        MathTeacher.prototype = new Teacher();
+
+        const v = new MathTeacher('v', 'fresno', 8);
+        console.log(v);
+        v.eat();
+        v.moveCity('madera');
+        v.changeGrade(9);
+        console.log(v);
+        console.log(v instanceof Person);
+        console.log(v instanceof Teacher);
+        console.log(v instanceof MathTeacher);
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode('hello'));
+        div.addEventListener('load', function () {
+            console.log('load');
+        });
+
+        setTimeout( () => {
+            console.log('setTimout');
+            document.body.appendChild(div);
+        }, 1000)
+    </script>
+</body>
+</html>

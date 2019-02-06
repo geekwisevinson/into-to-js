@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data-Set</title>
+    <style>
+        [data-obj-config] {
+            background-color: aqua;
+        }
+    </style>
+</head>
+<body>
+    <div >hello</div>
+
+    <button onclick="remove()">click</button>
+</body>
+<script>
+    const div = document.getElementsByTagName('div')[0];
+    div.setAttribute("data-obj-config", '{ "player" : "hello" }');
+    console.log(JSON.parse(div.dataset.objConfig ) );
+    function remove() {
+        console.log(div.dataset)
+        if (div.dataset.objConfig) {
+            div.removeAttribute('data-obj-config')
+        } else {
+            div.setAttribute("data-obj-config", '{ "player" : "hello" }');
+        }
+    }
+</script>
+</html>
