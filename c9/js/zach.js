@@ -1,4 +1,4 @@
-const body = document.body;
-const myDiv = document.createElement('div');
+var body = document.body;
+var myDiv = document.createElement('div');
 myDiv.innerHTML = '<p>Zach</p>';
 body.appendChild('myDiv');
