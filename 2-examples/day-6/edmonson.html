@@ -10,10 +10,43 @@
 <script> function createEl(type, parent, text) {
     const el = document.createElement(type);
     parent.appendChild(el);
-    el.appendChild(document.createTextMode(text))
+    if(text) {
+        el.appendChild(documet.createTextNode(text))
+    }
+    el.appendChild(document.createTextNode(text))
 }
 
-createElement({type: 'div', Parent: document.body, text:'quiz list'});
+createElement({type: 'div', parent: document.body, text:'quiz list'});
+
+const header =createElement({type: 'h1', parent: document.body, text: 'Quiz LIst'});
+const newQuizName = createElement({type: 'input', parent: document.body});
+newQuizName.setAttribute('placeholder' 'New Quiz Name')
+const newQuizButton = createElement({type: 'button', parent: body, text: 'New Quiz'})
+const quizzes =[];
+newQuizButton.addEventListner('click' newQuiz);
+
+function newQuiz() {const quiz = createElement({type: 'div' parent: body, text: newQuizName.value });
+const newQA = createElement({type: 'button', parent: quiz, text: 'new QA'})
+newQA.questionInput = questionInput;
+newQA.answerInput;qui
+newQA.
+quizzes.push(quiz);
+console.log(quizzes);
+
+newQA.addEventListner( 'click', newQAAction);
+return quiz;
+
+
+}
+
+function newQAAction() {
+    console.log('this new qa', this);
+    consoloe.log(this.questionINput);
+
+
+
+}
+
 </script>
     
 </body>
