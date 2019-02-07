@@ -9,6 +9,7 @@
 
 <script>
     const endpoint = `https://jsonplaceholder.typicode.com/users`;
+    // const endpoint = 'https://google.com';
     const table = document.createElement('table');
     document.body.appendChild(table);
     const tr = document.createElement('tr');
@@ -20,25 +21,38 @@
     thEmail.innerText = 'Email';
     tr.appendChild(thEmail);
 
+    var XHR = new XMLHttpRequest();
+    XHR.onreadystatechange = function() {
+        console.log(this)
+        if (this.readyState === 4 && this.status === 200) {
+            console.log('******');
+            console.log(this.responseText);
+            console.log('******');
+        }
+    };
+    XHR.open("GET", endpoint, true);
+    XHR.setRequestHeader("Access-Control-Allow-Origin", "*");
+    XHR.send();
 
-    fetch(endpoint)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(myJson) {
-            console.log(myJson);
-            const users = [...myJson].filter( item => item.name.includes('i'));
-            users.forEach( user => {
-                const userTr = document.createElement('tr');
-                table.appendChild(userTr);
-                const userNameTd = document.createElement('td');
-                userTr.appendChild(userNameTd);
-                userNameTd.innerText = user.name;
-                const userEmailTd = document.createElement('td');
-                userEmailTd.innerText = user.email;
-                userTr.appendChild(userEmailTd);
-            })
-        });
+    // fetch(endpoint)
+    //     .then(function(response) {
+    //         return response.json();
+    //     })
+    //     .then(function(myJson) {
+    //         console.log(myJson);
+    //         const users = [...myJson].filter( item => item.name.includes('i'));
+    //         users.forEach( user => {
+    //             const userTr = document.createElement('tr');
+    //             table.appendChild(userTr);
+    //             const userNameTd = document.createElement('td');
+    //             userTr.appendChild(userNameTd);
+    //             userNameTd.innerText = user.name;
+    //             const userEmailTd = document.createElement('td');
+    //             userEmailTd.innerText = user.email;
+    //             userTr.appendChild(userEmailTd);
+    //         })
+    //     });
 </script>
+
 </body>
 </html>
