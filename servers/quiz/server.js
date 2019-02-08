@@ -1,0 +1,12 @@
+"use strict";
+const express = require ( 'express' );
+const cors = require ( 'cors' );
+const fs = require ( 'fs' );
+const path = require ( 'path' );
+const app = express ();
+const http = require ( 'http' ).Server ( app );
+const port = 5000;
+const io = require ( 'socket.io' ) ( http );
+app.use ( cors () );
+console.log('dirName', __dirName);
+app.use ( express.static ( __dirName + '/assets' ) );
