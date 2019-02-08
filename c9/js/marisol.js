@@ -21,6 +21,7 @@ theDiv.appendChild(theUl);
 const mLis = document.getElementsByClassName('marisol-li')
 console.log({ mLis });
 
+
 const qsMlis = document.querySelector('.marisol-div .marisol-li')
 console.log({
    qsMlis
