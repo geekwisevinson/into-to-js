@@ -30,7 +30,7 @@ liValuesVinson.forEach(value => {
    })
 });
 
-
+myDiv.appendChild(myUl);
 
 
 

@@ -3,11 +3,11 @@ var myDiv = document.createElement('div');
 myDiv.innerHTML = '<p>Ed</p>'
 body.appendChild(myDiv);
 
-myDiv.classlist.add('ed-div')
+myDiv.classList.add('ed-div')
 
 const liValuesEd = ['ed', 'monson', 'ed@monsoninsurance.com']
 var myUl = document.createElement('ul');
-myDiv.classList.add('ed-ul');
+myUl.classList.add('ed-ul');
 liValuesEd.forEach(value => {
    const li = document.createElement('li');
    li.classList.add('ed-li');
