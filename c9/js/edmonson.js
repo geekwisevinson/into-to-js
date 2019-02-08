@@ -1,18 +1,37 @@
-/*global body*/
-var myDiv = document.createElement('div');
-myDiv.innerHTML = '<p>Ed</p>'
-body.appendChild(myDiv);
+/*import { body } from "../js/vinson.js"; {
+   const myH1 = document.createElement('h1');
+   myH1.innerHTML = 'Ed';
+   body.appendChild(myH1);
+}
 
-myDiv.classList.add('ed-div')
+{
+   const xhr = new XMLHttpRequest();
+   xhr.open('GET', 'test.txt');
+   xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+      console.log(this);
+   }
 
-const liValuesEd = ['ed', 'monson', 'ed@monsoninsurance.com']
-var myUl = document.createElement('ul');
-myUl.classList.add('ed-ul');
-liValuesEd.forEach(value => {
-   const li = document.createElement('li');
-   li.classList.add('ed-li');
-   li.appendChild(document.createTextNode(value));
-   myUl.appendChild(li);
-});
+   xhr.send();
 
-myDiv.appendChild(myUl)
+}*/
+
+{
+
+   const jsonP = 'https://jsonplaceholder.typicode.com/posts'
+   const xhr = new XMLHttpRequest();
+   xhr.open('GET', endpoints[2]);
+   xhr.onreadystatechange = function() {
+
+      if (xhr.readyState !== 4) return;
+      console.log(JSON.parse(this.responseText));
+      let posts = JSON.parse(this.responseText);
+
+      posts.forEach(post => {
+         console.log(post)
+      })
+   }
+
+   xhr.send();
+
+}

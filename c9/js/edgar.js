@@ -1,17 +1,47 @@
-/*global body */
-var myDiv = document.createElement('div');
-myDiv.innerHTML = '<p>Edgar<p>';
-body.appendChild(myDiv);
-myDiv.classList.add('edgar-div');
+import { body, endpoints } from "../js/vinson.js";
 
-const liValuesEdgar = ['edgar', 'gutierrez', 'edgargutierrez130@gmail.com'];
-var myEdgarUl = document.createElement('ul');
-myDiv.classList.add('edgar-ul');
-liValuesEdgar.forEach(value => {
-    const li = document.createElement('li');
-    li.classList.add('edgar')
-    li.appendChild(document.createTextNode(value));
-    myEdgarUl.appendChild(li)
-});
+{
+    const myH1 = document.createElement('h1');
+    myH1.innerHTML = 'Vinson';
+    body.appendChild(myH1);
+}
 
-myDiv.appendChild(myEdgarUl);
+{
+
+    const jsonP = 'https://jsonplaceholder.typicode.com/posts'
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', endpoints[2]);
+    xhr.onreadystatechange = function() {
+
+        if (xhr.readyState !== 4) return;
+        console.log(JSON.parse(this.responseText));
+        let posts = JSON.parse(this.responseText);
+
+        posts.forEach(post => {
+            console.log(post)
+        })
+    }
+
+    xhr.send();
+
+}
+
+
+
+//     const myH1 = document.createElement('h1');
+//     myH1.innerHTML = 'Edgar';
+//     body.appendChild(myH1);
+// }
+
+
+
+// (function() {
+//     const body = document.body;
+// })();
+
+// {
+//     const body = document.body;
+
+
+
+// }

@@ -2,7 +2,7 @@ import { body, endpoints } from "../js/vinson.js";
 
 {
    const myH1 = document.createElement('h1');
-   myH1.innerHTML = 'Marisol';
+   myH1.innerHTML = 'Vinson';
    body.appendChild(myH1);
 }
 
@@ -50,7 +50,7 @@ import { body, endpoints } from "../js/vinson.js";
       // })
       // console.log(result);
 
-      const myArr = ['1', 1, null, true, 'Marisol', 'Garcia']
+      const myArr = ['1', 1, null, true, 'vinson', 'fernandez']
       const myName = myArr.slice(4, 2);
       console.log(myName)
       console.log(myArr)

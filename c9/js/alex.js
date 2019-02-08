@@ -1,19 +1,13 @@
-/*global body*/
+import { body } from "../js/vinson.js"; {
+   const myH1 = document.createElement('h1');
+   myH1.innerHTML = 'Alex'
+   body.appendChild(myH1);
+} {
+   const xhr = new XMLHttpRequest();
+   xhr.open('GET', 'test.txt');
+   xhr.onreadystatechange = function() {
+      console.log('this');
 
-var myDiv = document.createElement('div');
-
-myDiv.innerHTML = '<p>Alex</p>';
-body.appendChild(myDiv);
-
-var list = document.createElement('ul');
-const info = ['alex', 'rodriguez', 'alejandro.xsc@gmail.com'];
-
-
-info.forEach(value => {
-   const li = document.createElement('li');
-   li.appendChild(document.createTextNode(value));
-   list.appendChild(li);
-});
-
-
-myDiv.appendChild(list);
+   }
+   xhr.send();
+}
