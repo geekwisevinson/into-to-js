@@ -1,0 +1,18 @@
+[
+  {
+    "author": "vinson",
+    "question": "What is javascript?",
+    "answers": [
+      {
+        "text": "an object-oriented computer programming language commonly used to create interactive effects within web browsers.",
+        "correct": true
+      },
+      {
+        "text": "A font type",
+        "correct": false
+      }
+    ]
+  }
+]
+
+

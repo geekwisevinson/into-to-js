@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        #html,#javascript {
+            height: 40vh;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <button>load</button>
+    <div>path: <span id="path"></span></div>
+</div>
+<hr>
+    HTML
+    <div id="html">
+
+    </div>
+    <!--html-->
+    <hr>
+    JavaScript
+    <!--javascript-->
+    <div id="javascript">
+
+    </div>
+
+</body>
+<script src="feature/editor/lib/codemirror.js"></script>
+<link rel="stylesheet" href="feature/editor/lib/codemirror.css">
+<script type="text/javascript"
+        src="feature/editor/mode/xml/xml.js"></script>
+
+<script type="text/javascript"
+        src="feature/editor/mode/javascript/javascript.js"></script>
+
+
+<script>
+    var myCodeMirror = CodeMirror(document.querySelector('#html'), {
+        mode:  "xml"
+    });
+    var myCodeMirror2 = CodeMirror(document.querySelector('#javascript'),  {
+        mode:  "javascript"
+    });
+</script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on('connect', () => {
+        console.log(socket.id);
+        console.log('request-made to server')
+    });
+
+    socket.on('client-should-redirect', (page) => {
+        console.log('server event', window.location.href);
+        const redirect = window.location.href.split('/');
+        redirect[redirect.length -1 ] = page;
+        console.log('redirect', redirect.join('/'));
+        window.location.href = redirect.join('/');
+    });
+
+</script>
+</html>
