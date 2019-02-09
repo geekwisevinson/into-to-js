@@ -64,12 +64,47 @@ io.on ( 'connection', function (socket) {
     socket.userIndex = users.length;
     users.push(socket);
 
-    socket.on('client-wants-to-sign-up', function ({username, password}) {
+    socket.on('client-would-like-to-sign-up', function ({username, password}) {
         const userConfigs = fs.readdirSync(__dirname + '/public/users')
             .filter( user => user.includes('.json') )
             .map( user => user.substring(0, user.indexOf('.json')) );
         console.log('userConfigs', userConfigs);
         console.log(username, password);
+
+        if (userConfigs.includes(username)) {
+            console.log('user already exists!')
+        } else {
+            console.log('create a user config');
+            if (password.length < 2) {
+                console.log('failed because of password')
+            }
+            const data = JSON.stringify({username, password: Buffer.from(username + password).toString('base64')});
+            const file = __dirname + `/public/users/${username}.json`;
+            fs.writeFileSync(file, data)
+        }
+    });
+
+    socket.on('client-would-like-to-login', function ({username, password}) {
+        const userConfigs = fs.readdirSync(__dirname + '/public/users')
+            .filter( user => user.includes('.json') )
+            .map( user => user.substring(0, user.indexOf('.json')) );
+        console.log('userConfigs', userConfigs);
+        console.log(username, password);
+
+        if (userConfigs.includes(username)) {
+            console.log('get user config');
+            const path = __dirname + '/public/users/' + `${username}.json`;
+            const user = JSON.parse(fs.readFileSync(path, 'utf8') );
+            console.log(user);
+
+            if (user.password === Buffer.from(username + password).toString('base64')) {
+                console.log('we have a match');
+            } else {
+                console.log('can not verify your password');
+            }
+        } else {
+            console.log('user does not exists!');
+        }
     });
 
 
