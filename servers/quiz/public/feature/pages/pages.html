@@ -81,9 +81,12 @@
 
             const hrefArray = window.location.href.split('/');
             const project = hrefArray[hrefArray.length - 1];
+            const button = document.createElement('button');
+            li.appendChild(button);
+            button.innerText = 'edit';
 
             // action
-            a.addEventListener('click', function () {
+            button.addEventListener('click', function () {
                 socket.emit('request-server-for-redirect', 'editor/'+ project + '/' + shortName)
             })
         });
