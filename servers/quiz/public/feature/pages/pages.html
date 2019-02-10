@@ -28,42 +28,27 @@
 </head>
 <body>
 
-    <div id="logged-in">
+<div id="logged-in">
 
-    </div>
-    <div id="error">
+</div>
+<div id="error">
 
-    </div>
-    <h1>Quizzers</h1>
+</div>
+<h1>Pages 1</h1>
 
-    <div class="sign-login">
-        <div class="username"><span>username:</span> <span><input id="username" type="text"></span></div>
-        <div class="password"><span>password:</span> <span><input id="password" type="text"></span></div>
-        <div class="password">
-            <button onclick="signUp()">SignUp</button> <button  onclick="login()">Login</button>
-        </div>
-    </div>
-    <div id="users-div">
-        <ul id="users-ul">
-
-        </ul>
-    </div>
-    <a id="editor" href="#">Editor</a>
-
-    <div>
-        <h3>Pages</h3>
-        <ul id="pages-ul">
-        </ul>
-    </div>
-
-
-
+<div>
+    <h3>Pages</h3>
+    <ul id="pages-ul">
+    </ul>
+</div>
 </body>
-
-
 <script src="/socket.io/socket.io.js"></script>
 <script>
-
+    var url_string = window.location.href; //window.location.href
+    var url = new URL(url_string);
+    var c = url.searchParams.get("c");
+    console.log(c);
+    const path = window.location.href.split('/').pop();
     // Check browser support
     if (typeof(Storage) !== "undefined") {
         // Store
@@ -73,15 +58,10 @@
     } else {
         document.getElementById("error").innerHTML = "Sorry, your browser does not support Web Storage...";
     }
-
-
-
-    document.querySelector('#editor').addEventListener('click', function () {
-        socket.emit('request-server-for-redirect', 'editor')
-    } );
     const socket = io();
     socket.on('connect', () => {
         console.log(socket.id);
+        socket.emit('request-server-for-pages', path );
     });
 
     socket.user = {};
@@ -96,12 +76,15 @@
             const li = document.createElement('li');
             a.appendChild(document.createTextNode(page));
             li.appendChild(a);
-            a.setAttribute('href', '#');
+            a.setAttribute('href', '');
             pagesUl.appendChild(li);
+
+            const hrefArray = window.location.href.split('/');
+            const project = hrefArray[hrefArray.length - 1];
 
             // action
             a.addEventListener('click', function () {
-                socket.emit('request-server-for-redirect', shortName)
+                socket.emit('request-server-for-redirect', 'editor/'+ project + '/' + shortName)
             })
         });
     });
@@ -120,38 +103,14 @@
         document.querySelector('#error').innerHTML = error;
     });
 
-    socket.on('server-sent-login', (username) => {
-        localStorage.setItem('username', username);
-        console.log('logged in');
-        document.querySelector('#error').innerHTML = '';
-        document.querySelector('#logged-in').innerHTML = username;
-        socket.emit('request-server-for-redirect', 'projects')
-    });
 
 
-    function signUp() {
-        const user = {
-            username: document.querySelector('#username').value,
-            password: document.querySelector('#password').value,
-        };
-        if (user.password.length < 3 || user.username.length < 3) {
-            alert('username and password have to be at least 3 characters');
-        }
-        console.log('user', user);
-        socket.emit('client-would-like-to-sign-up', user);
-    }
 
-    function login() {
-        const user = {
-            username: document.querySelector('#username').value,
-            password: document.querySelector('#password').value,
-        };
+    console.log('location', path );
+    socket.emit('request-server-for-pages', `${path}`);
+    setInterval(() => {
+        socket.emit('request-server-for-pages', `${path}`);
 
-        if (user.password.length < 3 || user.username.length < 3) {
-            alert('username and password have to be at least 3 characters');
-        }
-        console.log('user', user);
-        socket.emit('client-would-like-to-login', user);
-    }
+    }, 5000)
 </script>
 </html>

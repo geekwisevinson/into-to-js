@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('connect', () => {
+            console.log(socket.id);
+        });
+
+        socket.on('client-should-redirect', (page) => {
+            console.log('server is letting us know we need to redirect');
+            console.log('server event', window.location.href);
+            const redirect = window.location.href.split('/');
+            redirect[redirect.length -1 ] = page;
+            console.log('redirect', redirect.join('/'));
+            window.location.href = redirect.join('/');
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>
