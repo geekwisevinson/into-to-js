@@ -22,8 +22,10 @@
             background: red;
             color: whitesmoke;
         }
-
         h1 {text-align: center}
+        button {
+            margin: 1em;
+        }
     </style>
 </head>
 <body>
@@ -49,6 +51,7 @@
     var c = url.searchParams.get("c");
     console.log(c);
     const path = window.location.href.split('/').pop();
+    document.getElementsByTagName('h1')[0].innerHTML = path;
     // Check browser support
     if (typeof(Storage) !== "undefined") {
         // Store
@@ -88,6 +91,9 @@
             // action
             button.addEventListener('click', function () {
                 socket.emit('request-server-for-redirect', 'editor/'+ project + '/' + shortName)
+            });
+            a.addEventListener('click', function () {
+                socket.emit('request-server-for-redirect', 'live/'+ project + '/' + shortName)
             })
         });
     });

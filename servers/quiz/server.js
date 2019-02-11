@@ -45,10 +45,20 @@ app.get('/home', function catchRoute(req, res){
     res.sendFile(__dirname + "/public/entry/home.html");
 });
 app.get('/projects/editor/:project/:file', function catchRoute(req, res){
+    console.log('/projects/editor/:project/:file');
     res.sendFile(__dirname + "/public/feature/editor/editor.html");
 });
 
+app.get('/projects/live/:project/:file', function catchRoute(req, res){
+    console.log('/projects/live/:project/:file');
+    const project = req.params.project;
+    const file = req.params.file;
+    console.log( {project, file}, req.params);
+    res.sendFile(__dirname + `/public/feature/projects/${project}/${file}.html`);
+});
+
 app.get('/projects/:page', function catchRoute(req, res){
+    console.log('/projects/:page');
     res.sendFile(__dirname + "/public/feature/pages/pages.html");
 });
 app.get('/projects', function catchRoute(req, res){
@@ -63,9 +73,6 @@ function addCatchRoute() {
         res.sendFile(__dirname + "/public/entry/not-found.html");
     });
 }
-
-
-
 
 // Socket messages
 io.on ( 'connection', function (socket) {
@@ -96,21 +103,21 @@ io.on ( 'connection', function (socket) {
         requestServerForFolders(socket, path);
     });
     socket.on('request-text-from-file', function(path){
-        console.log('request text from file', path);
         const built = __dirname + '/public/feature/projects/' + `${path}.html`;
         const content = fs.readFileSync(built, 'utf8').split('body')[1];
         const final = content.substring(1, content.length -2);
-        console.log(final);
         io.to(socket.id).emit('server-sent-data-text', final);
     });
-    socket.on('request-to-save-text', function(path, data){
-        console.log('request text save file', path, data);
+    socket.on('request-to-save-text', function(path, data, liveCoding){
         const file = __dirname + `/public/feature/projects/${path}.html`;
         const template = fs.readFileSync(__dirname+ '/public/feature/templates/page-template.html', 'utf8').split('<body>');
-        template.splice(1, 0, '<body>\n'+ data);
-        const result = template.join('');
-        console.log('result', result);
+        template.splice(1, 0, '<body>'+ data.trim());
+        const result = template.join('').trim();
         fs.writeFileSync(file, result);
+        console.log('broadcast save');
+        if (liveCoding) {
+            io.emit('file-updated', 'hello friends!');
+        }
     });
 });
 

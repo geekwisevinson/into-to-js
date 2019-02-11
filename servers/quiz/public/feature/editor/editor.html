@@ -17,19 +17,24 @@
             width: 1px;
             display: none;
         }
+        
     </style>
 </head>
 <body>
 <div class="">
-    <button onclick="save()">save</button>
+
     <fieldset id="group1" onchange="viewChange()" >
+        <button onclick="save()">save</button>
         Html
         <input type="radio" name="view" value="html">
         JS
         <input type="radio" name="view" value="js">
         Both
         <input type="radio" name="view" value="both">
+        Live
+        <input type="checkbox" onchange="liveCoding = this.checked">
     </fieldset>
+
 </div>
 <div class="holder">
 
@@ -78,6 +83,7 @@
 <script>
     const socket = io();
     const redirect = window.location.href.split('/');
+    let liveCoding = false;
     socket.on('connect', () => {
         console.log(socket.id);
         console.log('request-made to server');
@@ -95,7 +101,7 @@
     });
 
     socket.on('server-sent-data-text', (text) => {
-        console.log('server sent data text ', text);
+        console.log('i got update', text);
         let html = '';
         let js = '';
 
@@ -105,15 +111,30 @@
         myCodeMirror2.setValue(js);
     });
 
+    socket.on('file-updated', (text) => {
+        console.log('server sent data text ', liveCoding);
+        if (liveCoding) {
+
+        } else {
+            console.log('i should update');
+            socket.emit('request-text-from-file', redirect.slice(redirect.length -2).join('/'));
+        }
+    });
+
     function save() {
         let result = myCodeMirror.getValue();
-        result += '\n<script>\n';
+        result += '<script>';
         result += myCodeMirror2.getValue();
-        result += `\n<`;
+        result += `<`;
         result += '/script>';
-        console.log(result);
-        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), result)
+        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), result, liveCoding)
     }
 
+    myCodeMirror.on('change', changeDetected);
+    myCodeMirror2.on('change', changeDetected);
+    function changeDetected() {
+        console.log('detected');
+        save();
+    }
 </script>
 </html>
