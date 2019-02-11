@@ -109,6 +109,7 @@
         js += text.includes('<script>') ? text.substring(text.indexOf('<script>') + 8, text.length - 10): '';
         myCodeMirror.setValue(html);
         myCodeMirror2.setValue(js);
+        createMarker({ch: 0, line:4})
     });
 
     socket.on('file-updated', (text) => {
@@ -132,9 +133,28 @@
 
     myCodeMirror.on('change', changeDetected);
     myCodeMirror2.on('change', changeDetected);
-    function changeDetected() {
-        console.log('detected');
+    function changeDetected(event) {
+        console.log('detected', myCodeMirror.getCursor());
         save();
     }
+
+
+    function createMarker(cursorPos) {
+        const cursorCoords = myCodeMirror.cursorCoords(cursorPos);
+        const cursorElement = document.createElement('span');
+        cursorElement.style.borderLeftStyle = 'solid';
+        cursorElement.style.borderLeftWidth = '2px';
+        cursorElement.style.borderLeftColor = '#ff0000';
+        cursorElement.style.height = `${(cursorCoords.bottom - cursorCoords.top)}px`;
+        cursorElement.style.padding = 0;
+        cursorElement.style.zIndex = 0;
+
+// Set the generated DOM node at the position of the cursor sent from another client
+// setBookmark first argument: The position of the cursor sent from another client
+// Second argument widget: Generated DOM node
+        marker = myCodeMirror.setBookmark(cursorPos, { widget: cursorElement });
+    }
+
+
 </script>
 </html>
