@@ -17,8 +17,22 @@
             width: 1px;
             display: none;
         }
-        
+
+        .CodeMirror-hints {
+            background-color: red;
+        }
+        .CodeMirror-hint {
+            background-color: green;
+        }
+        .CodeMirror-hint-active {
+            background-color: blue;
+            color: yellow;
+        }
+
+
     </style>
+    <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+    <link rel="stylesheet" href="http://codemirror.net/addon/hint/show-hint.css">
 </head>
 <body>
 <div class="">
@@ -56,17 +70,32 @@
 <link rel="stylesheet" href="../../../feature/editor/lib/codemirror.css">
 <script type="text/javascript"
         src="../../../feature/editor/mode/xml/xml.js"></script>
-
+<script type="text/javascript"
+        src="../../../feature/editor/mode/htmlmixed/htmlmixed.js"></script>
 <script type="text/javascript"
         src="../../../feature/editor/mode/javascript/javascript.js"></script>
-
-
+<script src="http://codemirror.net/addon/hint/show-hint.js"></script>
+<script src="http://codemirror.net/addon/hint/javascript-hint.js"></script>
+<script src="http://codemirror.net/addon/hint/xml-hint.js"></script>
+<script src="http://codemirror.net/addon/hint/html-hint.js"></script>
 <script>
+    let htmlLast = '';
+    let jsLast = '';
     var myCodeMirror = CodeMirror(document.querySelector('#html'), {
-        mode:  "xml"
+        lineNumbers: true,
+        mode: "text/html",
+        extraKeys: {"Ctrl-Space": "autocomplete"},
+        value: document.documentElement.innerHTML
     });
-    var myCodeMirror2 = CodeMirror(document.querySelector('#javascript'),  {
-        mode:  "javascript"
+    var myCodeMirror2 = CodeMirror(document.querySelector('#javascript'), {
+        lineNumbers: true,
+        extraKeys: {
+            "Ctrl-Space": "autocomplete"
+        },
+        mode: {
+            name: "javascript",
+            globalVars: true
+        }
     });
     const inputs = document.getElementsByTagName('input');
     inputs[2].checked = true;
@@ -83,9 +112,19 @@
 <script src="../../../basic/basic.js"></script>
 <script>
     const redirect = window.location.href.split('/');
-    let liveCoding = false;
+    let liveCoding = inputs[3].checked;
     socket.on('connect', () => {
         socket.emit('request-text-from-file', redirect.slice(redirect.length -2).join('/'));
+    });
+
+    socket.on('server-show-cursor', (type, cursor, username) => {
+        console.log('type,cursor,username', type, cursor, username);
+        if (type === 'html') {
+            createMarker(cursor, myCodeMirror, username)
+        }
+        if (type === 'js') {
+            createMarker(cursor, myCodeMirror2, username)
+        }
     });
 
     socket.on('server-sent-data-text', (text) => {
@@ -93,11 +132,15 @@
         let html = '';
         let js = '';
         html += text.substring(0, text.includes('<script>') ? text.indexOf('<script>') : text.length);
-        js += text.includes('<script>') ? text.substring(text.indexOf('<script>') + 8, text.length - 11): '';
+        js += text.includes('<script>') ? text.substring(text.indexOf('<script>') + 8, text.length - 10): '';
         myCodeMirror.setValue(html);
-        if (js === '<') js = '';
         myCodeMirror2.setValue(js);
-        createMarker({ch: 0, line:4})
+        if (html !== htmlLast) {
+            createMarkerOriginal({ch: 0, line:4}, myCodeMirror);
+        }
+        if (js !== jsLast) {
+            createMarkerOriginal({ch: 0, line:4}, myCodeMirror2);
+        }
     });
 
     socket.on('file-updated', (text) => {
@@ -125,17 +168,40 @@
 
     myCodeMirror.on('change', changeDetected);
     myCodeMirror2.on('change', changeDetected);
+    myCodeMirror.on('mousedown', showCursorHTML);
+    myCodeMirror2.on('mousedown', showCursorJS);
     function changeDetected(event) {
         console.log('detected', myCodeMirror.getCursor());
         save();
     }
 
+    function showCursorHTML() {
+        setTimeout(() => {
+            const pos = myCodeMirror.getCursor();
+            console.log('pos', pos);
+            socket.emit('client-show-cursor', 'html', pos, localStorage.getItem('username'))
+        }, 300);
+    }
+    function showCursorJS() {
+        setTimeout(() => {
+            const pos = myCodeMirror2.getCursor();
+            console.log('pos', pos);
+            socket.emit('client-show-cursor', 'js', pos, localStorage.getItem('username') );
+        }, 300);
+    }
 
-    function createMarker(cursorPos) {
-        const cursorCoords = myCodeMirror.cursorCoords(cursorPos);
+
+    function createMarker(cursorPos, mirror, name) {
+        const cursorCoords = mirror.cursorCoords(cursorPos);
         const cursorElement = document.createElement('span');
+        const nameSpan = document.createElement('span');
+        nameSpan.style.backgroundColor = 'red';
+        nameSpan.style.position = 'absolute';
+        nameSpan.style.top = '1em';
+        nameSpan.appendChild(document.createTextNode(name?name:''));
+        cursorElement.appendChild(nameSpan);
         cursorElement.style.borderLeftStyle = 'solid';
-        cursorElement.style.borderLeftWidth = '2px';
+        cursorElement.style.borderLeftWidth = '1px';
         cursorElement.style.borderLeftColor = '#ff0000';
         cursorElement.style.height = `${(cursorCoords.bottom - cursorCoords.top)}px`;
         cursorElement.style.padding = 0;
@@ -144,9 +210,29 @@
 // Set the generated DOM node at the position of the cursor sent from another client
 // setBookmark first argument: The position of the cursor sent from another client
 // Second argument widget: Generated DOM node
-        marker = myCodeMirror.setBookmark(cursorPos, { widget: cursorElement });
+        const marker = mirror.setBookmark(cursorPos, { widget: cursorElement });
+        console.log('marker', marker);
+        setTimeout(() => {
+            marker.clear();
+        }, 1000)
     }
 
+
+    function createMarkerOriginal(cursorPos, mirror) {
+        const cursorCoords = mirror.cursorCoords(cursorPos);
+        const cursorElement = document.createElement('span');
+        cursorElement.style.borderLeftStyle = 'solid';
+        cursorElement.style.borderLeftWidth = '1px';
+        cursorElement.style.borderLeftColor = '#ff0000';
+        cursorElement.style.height = `${(cursorCoords.bottom - cursorCoords.top)}px`;
+        cursorElement.style.padding = 0;
+        cursorElement.style.zIndex = 0;
+
+// Set the generated DOM node at the position of the cursor sent from another client
+// setBookmark first argument: The position of the cursor sent from another client
+// Second argument widget: Generated DOM node
+        const marker = mirror.setBookmark(cursorPos, { widget: cursorElement });
+    }
 
 </script>
 </html>

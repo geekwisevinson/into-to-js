@@ -30,8 +30,6 @@ function loadPagesRoutes() {
     })
 }
 loadPagesRoutes();
-
-
 app.get('/', function catchRoute(req, res){
     console.log('you came home');
     res.sendFile(__dirname + "/public/entry/home.html");
@@ -68,7 +66,7 @@ function addCatchRoute() {
 }
 // Socket messages
 setInterval( () => {
-    sendUsers();
+    // sendUsers();
 }, 10000);
 function sendUsers() {
     const keys = Object.keys(users);
@@ -109,8 +107,8 @@ io.on ( 'connection', function (socket) {
     });
     socket.on('request-text-from-file', function(path){
         const built = __dirname + '/public/feature/projects/' + `${path}.html`;
-        const content = fs.readFileSync(built, 'utf8').split('body')[1];
-        const final = content.substring(1, content.length -2);
+        const content = fs.readFileSync(built, 'utf8').split('body>')[1];
+        const final = content.substring(0, content.length -2);
         io.to(socket.id).emit('server-sent-data-text', final);
     });
     socket.on('request-to-save-text', function(path, data, liveCoding){
@@ -123,7 +121,9 @@ io.on ( 'connection', function (socket) {
             io.emit('file-updated', 'hello friends!');
         }
     });
-
+    socket.on('client-show-cursor', function(type, cursor, username) {
+        io.emit('server-show-cursor', type, cursor, username);
+    });
     socket.on('client-location', function(location) {
         if (socket.username) {
             users[socket.username].location = location;
