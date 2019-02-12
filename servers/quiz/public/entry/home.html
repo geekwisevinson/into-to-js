@@ -8,34 +8,24 @@
             width: 240px;
             display: flex;
         }
-
         .username > * , .password > * { flex: 1; margin-top: 4px}
         .password button {
             padding: 4px;
         }
-
         .sign-login > * {
             margin: 0 auto;
         }
-
         #error {
             background: red;
             color: whitesmoke;
         }
-
         h1 {text-align: center}
     </style>
 </head>
 <body>
 
-    <div id="logged-in">
 
-    </div>
-    <div id="error">
-
-    </div>
     <h1>Quizzers</h1>
-
     <div class="sign-login">
         <div class="username"><span>username:</span> <span><input id="username" type="text"></span></div>
         <div class="password"><span>password:</span> <span><input id="password" type="text"></span></div>
@@ -45,86 +35,14 @@
     </div>
     <div id="users-div">
         <ul id="users-ul">
-
         </ul>
     </div>
-    <a id="editor" href="#">Editor</a>
-
-    <div>
-        <h3>Pages</h3>
-        <ul id="pages-ul">
-        </ul>
-    </div>
-
-
-
 </body>
-
-
 <script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
 <script>
 
-    // Check browser support
-    if (typeof(Storage) !== "undefined") {
-        // Store
-        localStorage.setItem("test", "test");
-        // Retrieve
-        document.getElementById("logged-in").innerHTML = localStorage.getItem("username");
-    } else {
-        document.getElementById("error").innerHTML = "Sorry, your browser does not support Web Storage...";
-    }
-
-
-
-    document.querySelector('#editor').addEventListener('click', function () {
-        socket.emit('request-server-for-redirect', 'editor')
-    } );
-    const socket = io();
-    socket.on('connect', () => {
-        console.log(socket.id);
-    });
-
-    socket.user = {};
-
-    socket.on('server-sent-data-pages', (pages) => {
-        console.log('server sent pages', pages);
-        const pagesUl = document.querySelector('#pages-ul');
-        pagesUl.innerHTML = '';
-        pages.forEach( page => {
-            const shortName = page.substring(0, page.indexOf('.html'));
-            const a = document.createElement('a');
-            const li = document.createElement('li');
-            a.appendChild(document.createTextNode(page));
-            li.appendChild(a);
-            a.setAttribute('href', '#');
-            pagesUl.appendChild(li);
-
-            // action
-            a.addEventListener('click', function () {
-                socket.emit('request-server-for-redirect', shortName)
-            })
-        });
-    });
-
-    socket.on('client-should-redirect', (page) => {
-        console.log('server is letting us know we need to redirect');
-        console.log('server event', window.location.href);
-        const redirect = window.location.href.split('/');
-        redirect[redirect.length -1 ] = page;
-        console.log('redirect', redirect.join('/'));
-        window.location.href = redirect.join('/');
-    });
-
-    socket.on('error-message', (error) => {
-        console.log('error');
-        document.querySelector('#error').innerHTML = error;
-    });
-
-    socket.on('server-sent-login', (username) => {
-        localStorage.setItem('username', username);
-        console.log('logged in');
-        document.querySelector('#error').innerHTML = '';
-        document.querySelector('#logged-in').innerHTML = username;
+    socket.on('server-sent-login', ({username, token}) => {
         socket.emit('request-server-for-redirect', 'projects')
     });
 

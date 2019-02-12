@@ -35,22 +35,8 @@
 </body>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
 <script>
-    const socket = io();
-    socket.user = {};
-
-    // Check browser support
-    if (typeof(Storage) !== "undefined") {
-        // Store
-        localStorage.setItem("lastname", "Smith");
-        // Retrieve
-        document.getElementById("logged-in").innerHTML = localStorage.getItem("username");
-    } else {
-        document.getElementById("error").innerHTML = "Sorry, your browser does not support Web Storage...";
-    }
-    socket.on('connect', () => {
-        console.log(socket.id);
-    });
 
     socket.on('server-sent-data-folders', (folders) => {
         console.log('server sent folders', folders);
@@ -61,27 +47,10 @@
             const li = document.createElement('li');
             a.appendChild(document.createTextNode(folder));
             li.appendChild(a);
-            a.setAttribute('href', '');
+            a.setAttribute('href', 'projects/' + folder);
             foldersUl.appendChild(li);
-            // action
-            a.addEventListener('click', function () {
-                socket.emit('request-server-for-redirect', 'projects/' + folder)
-            })
+            a.classList.add('link');
         });
-    });
-
-    socket.on('client-should-redirect', (page) => {
-        console.log('server is letting us know we need to redirect');
-        console.log('server event', window.location.href);
-        const redirect = window.location.href.split('/');
-        redirect[redirect.length -1 ] = page;
-        console.log('redirect', redirect.join('/'));
-        window.location.href = redirect.join('/');
-    });
-
-    socket.on('error-message', (error) => {
-        console.log('error');
-        document.querySelector('#error').innerHTML = error;
     });
 
     socket.emit('request-server-for-folders', '');

@@ -30,11 +30,6 @@
 </head>
 <body>
 
-<div id="logged-in">
-
-</div>
-<div id="error">
-
 </div>
 <h1>Pages 1</h1>
 
@@ -45,75 +40,33 @@
 </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
 <script>
-    var url_string = window.location.href; //window.location.href
-    var url = new URL(url_string);
-    var c = url.searchParams.get("c");
-    console.log(c);
     const path = window.location.href.split('/').pop();
-    document.getElementsByTagName('h1')[0].innerHTML = path;
-    // Check browser support
-    if (typeof(Storage) !== "undefined") {
-        // Store
-        localStorage.setItem("test", "test");
-        // Retrieve
-        document.getElementById("logged-in").innerHTML = localStorage.getItem("username");
-    } else {
-        document.getElementById("error").innerHTML = "Sorry, your browser does not support Web Storage...";
-    }
-    const socket = io();
-    socket.on('connect', () => {
-        console.log(socket.id);
-        socket.emit('request-server-for-pages', path );
-    });
-
-    socket.user = {};
-
     socket.on('server-sent-data-pages', (pages) => {
-        console.log('server sent pages', pages);
         const pagesUl = document.querySelector('#pages-ul');
         pagesUl.innerHTML = '';
         pages.forEach( page => {
             const shortName = page.substring(0, page.indexOf('.html'));
             const a = document.createElement('a');
             const li = document.createElement('li');
-            a.appendChild(document.createTextNode(page));
-            li.appendChild(a);
-            a.setAttribute('href', '');
-            pagesUl.appendChild(li);
-
             const hrefArray = window.location.href.split('/');
             const project = hrefArray[hrefArray.length - 1];
+            a.appendChild(document.createTextNode(page));
+            li.appendChild(a);
+            a.setAttribute('href', '/live/'+ project + '/' + shortName);
+            pagesUl.appendChild(li);
             const button = document.createElement('button');
             li.appendChild(button);
             button.innerText = 'edit';
 
             // action
             button.addEventListener('click', function () {
-                socket.emit('request-server-for-redirect', 'editor/'+ project + '/' + shortName)
+                socket.emit('request-server-for-redirect', 'editor/'+ project + '/' + shortName);
             });
-            a.addEventListener('click', function () {
-                socket.emit('request-server-for-redirect', 'live/'+ project + '/' + shortName)
-            })
+
         });
     });
-
-    socket.on('client-should-redirect', (page) => {
-        console.log('server is letting us know we need to redirect');
-        console.log('server event', window.location.href);
-        const redirect = window.location.href.split('/');
-        redirect[redirect.length -1 ] = page;
-        console.log('redirect', redirect.join('/'));
-        window.location.href = redirect.join('/');
-    });
-
-    socket.on('error-message', (error) => {
-        console.log('error');
-        document.querySelector('#error').innerHTML = error;
-    });
-
-
-
 
     console.log('location', path );
     socket.emit('request-server-for-pages', `${path}`);

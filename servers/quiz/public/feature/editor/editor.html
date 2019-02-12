@@ -24,7 +24,7 @@
 <div class="">
 
     <fieldset id="group1" onchange="viewChange()" >
-        <button onclick="save()">save</button>
+        <button onclick="run()">Run</button>
         Html
         <input type="radio" name="view" value="html">
         JS
@@ -80,34 +80,22 @@
 </script>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
 <script>
-    const socket = io();
     const redirect = window.location.href.split('/');
     let liveCoding = false;
     socket.on('connect', () => {
-        console.log(socket.id);
-        console.log('request-made to server');
-        console.log('redirect', redirect.slice(redirect.length -2).join('/'));
         socket.emit('request-text-from-file', redirect.slice(redirect.length -2).join('/'));
-    });
-
-    socket.on('client-should-redirect', (page) => {
-        console.log('server event', window.location.href);
-
-        redirect[redirect.length -1 ] = page;
-        console.log('redirect', redirect)
-        console.log('redirect', redirect.join('/'));
-        window.location.href = redirect.join('/');
     });
 
     socket.on('server-sent-data-text', (text) => {
         console.log('i got update', text);
         let html = '';
         let js = '';
-
         html += text.substring(0, text.includes('<script>') ? text.indexOf('<script>') : text.length);
-        js += text.includes('<script>') ? text.substring(text.indexOf('<script>') + 8, text.length - 10): '';
+        js += text.includes('<script>') ? text.substring(text.indexOf('<script>') + 8, text.length - 11): '';
         myCodeMirror.setValue(html);
+        if (js === '<') js = '';
         myCodeMirror2.setValue(js);
         createMarker({ch: 0, line:4})
     });
@@ -129,6 +117,10 @@
         result += `<`;
         result += '/script>';
         socket.emit('request-to-save-text', redirect.slice(-2).join('/'), result, liveCoding)
+    }
+
+    function run() {
+        socket.emit('request-server-for-redirect', `live/${redirect.slice(redirect.length -2).join('/')}`);
     }
 
     myCodeMirror.on('change', changeDetected);
