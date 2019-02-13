@@ -12,7 +12,6 @@ const port = 7000;
 const io = require ( 'socket.io' ) ( http );
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
-const pages = [];
 app.use ( cors () );
 http.listen ( port, function () {
     console.log ( 'listening on', port );
@@ -23,16 +22,6 @@ const users = {};
 const tokens = {};
 
 // Serve Files
-function loadPagesRoutes() {
-    pages.forEach( page => {
-        const myFunction = function(req, res){
-            res.sendFile(__dirname + `/public/pages/${page}`);
-        };
-        Object.defineProperty(myFunction, 'name', {value: page, writable: false});
-        app.get(`/${page.substring(0, page.indexOf('.html'))}`, myFunction);
-    })
-}
-loadPagesRoutes();
 app.get('/', function catchRoute(req, res){
     console.log('you came home');
     res.sendFile(__dirname + "/public/entry/home.html");
@@ -63,7 +52,7 @@ app.get('/projects', function catchRoute(req, res){
 addCatchRoute();
 function addCatchRoute() {
     app.get('/*', function catchRoute(req, res){
-        console.log('could not find your route');
+        console.log('could not find your route', req.url);
         res.sendFile(__dirname + "/public/entry/not-found.html");
     });
 }
@@ -106,8 +95,11 @@ io.on ( 'connection', function (socket) {
         requestServerForFolders(socket, path);
     });
     socket.on('request-text-from-file', function(path){
+        console.log('request for file', path );
         const built = __dirname + '/public/feature/projects/' + `${path}.html`;
+        debugger;
         if (!fs.existsSync(built)) {
+            console.log(built, 'does not exist');
             return;
         }
         const content = fs.readFileSync(built, 'utf8');
@@ -128,14 +120,12 @@ io.on ( 'connection', function (socket) {
         });
         const rx = new RegExp("<script[\\d\\D]*?\/script>", "g");
         const html = content.includes('<body>') ? content.substring(content.indexOf('<body>') + 6, content.indexOf('</body>')).replace(rx, '') : '';
-        io.to(socket.id).emit('server-sent-data-text', {html, js});
+        io.to(socket.id).emit('server-sent-data-text', {html, js, file: path});
     });
     socket.on('request-to-save-text', function(path, {html, js, username}, liveCoding){
-        saves++;
-        console.log('saves', saves, username);
+        console.log('attempt', saves, username);
         let replacedHtml = html.replace('&lt;','<');
         replacedHtml = replacedHtml.replace('&gt;', '>');
-        debugger;
         const file = __dirname + `/public/feature/projects/${path}.html`;
         // get template
         const template = fs.readFileSync(__dirname+ '/public/feature/templates/page-template.html', 'utf8');
@@ -162,9 +152,18 @@ io.on ( 'connection', function (socket) {
         const beforeHtml = `<!doctype html>
 <html lang="en">${dom.window.document.documentElement.innerHTML}</html>`;
         const result = beforeHtml.split('<body>').join(`<body>${replacedHtml}`);
+        const oldValue = fs.readFileSync(file, 'utf8');
+        if (oldValue === result) {return}
         fs.writeFileSync(file, result);
+        saves++;
+        console.log('succeeded', saves, username);
+        console.log('oldValue **************');
+        console.log(oldValue);
+        console.log('result *************');
+        console.log(result);
+        // console.log('users', Object.keys(io.sockets.sockets));
         if (liveCoding) {
-            io.emit('file-updated', 'hello friends!');
+            io.emit('file-updated', file);
         }
     });
     socket.on('client-show-cursor', function(type, cursor, username) {
@@ -199,27 +198,6 @@ io.on ( 'connection', function (socket) {
         }
     });
 });
-function removePath(path) {
-    return function removeMiddleWares(route, i, routes) {
-        if (route.handle.name.indexOf('.html') > -1) {
-        }
-        switch (route.handle.name) {
-            case path:
-                routes.splice(i, 1);
-        }
-        if (route.route)
-            route.route.stack.forEach(removeMiddleWares);
-    }
-}
-function logPaths(path) {
-    return function logPathF(route, i, routes) {
-        if (route.handle.name.indexOf('.html') > -1) {
-            // console.log( 'route.handle.name:', route.handle.name );
-        }
-        if (route.route)
-            route.route.stack.forEach(logPathF);
-    }
-}
 // Long functions
 function clientWouldLikeToSignUp(socket, username, password) {
     const userConfigs = fs.readdirSync(__dirname + '/public/users')
@@ -267,23 +245,8 @@ function saveLogin(user, socket) {
 }
 function requestServerForPages(socket, path) {
     const root = __dirname + '/public/' + 'feature/projects/';
-    const testPages = fs.readdirSync(root + path).filter( page => page.includes('.html') );
-    testPages.forEach( page => {
-        if (pages.indexOf(page) < 0) {
-            pages.push(page);
-            createRoute(page, root + `${path}/${page}` )
-        }
-    });
-    pages.forEach( page => {
-        if (testPages.indexOf(page) < 0) {
-            pages.splice(pages.indexOf(page), 1);
-            const routes = app._router.stack;
-            routes.forEach(removePath(page));
-        }
-    });
-    app._router.stack.forEach(logPaths());
-    removePath('catchRoute');
-    addCatchRoute();
+    const pages = fs.readdirSync(root + path).filter( page => page.includes('.html') );
+
     io.to(socket.id).emit('server-sent-data-pages', pages);
 }
 function requestServerForFolders(socket, path) {

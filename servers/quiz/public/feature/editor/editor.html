@@ -6,13 +6,24 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-
     <style>
         .holder {
             height: 300px;
             display: flex;
             flex-direction: column;
+            flex: 1;
+            width: 100%;
         }
+
+        holder > * {
+            border: 1px solid black;
+        }
+
+        .main-holder {
+            display: flex;
+        }
+
+
         .closed {
             width: 1px;
             display: none;
@@ -21,50 +32,59 @@
         .CodeMirror-hints {
             background-color: red;
         }
+
         .CodeMirror-hint {
             background-color: green;
         }
+
         .CodeMirror-hint-active {
             background-color: blue;
             color: yellow;
         }
-
-
     </style>
     <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
     <link rel="stylesheet" href="http://codemirror.net/addon/hint/show-hint.css">
 </head>
 <body>
 <div class="">
-
-    <fieldset id="group1" onchange="viewChange()" >
+    <fieldset id="group1" onchange="viewChange()">
         <button onclick="run()">Run</button>
-        Html
-        <input type="radio" name="view" value="html">
-        JS
-        <input type="radio" name="view" value="js">
-        Both
-        <input type="radio" name="view" value="both">
-        Live
-        <input type="checkbox" onchange="liveCoding = this.checked">
+        <select name="" id="view-select">
+            <option value="both">Both</option>
+            <option value="html">Html</option>
+            <option value="js">JS</option>
+        </select>
+        <input id="live-input" type="checkbox" onchange="liveCoding = this.checked">
         <button onclick="redirectAll()">Redirect All</button>
+        Project
+        <select id="folders-select" onchange="folderSelected()">
+        </select>
+        File
+        <select id="files-select" onchange="fileSelected()">
+        </select>
+
     </fieldset>
-
 </div>
-<div class="holder">
-
-    <div id="html">
-        HTML
-    </div>
-    <!--html-->
-
-    <!--javascript-->
-    <div id="javascript">
-        JavaScript
-
+<div class="">
+    <div class="holder">
+        <div id="html">
+            HTML
+        </div>
+        <!--html-->
+        <!--javascript-->
+        <div id="javascript">
+            JavaScript
+        </div>
+        <div id="html2">
+            HTML
+        </div>
+        <!--html-->
+        <!--javascript-->
+        <div id="javascript2">
+            JavaScript
+        </div>
     </div>
 </div>
-
 
 </body>
 <script src="../../../feature/editor/lib/codemirror.js"></script>
@@ -79,14 +99,68 @@
 <script src="http://codemirror.net/addon/hint/javascript-hint.js"></script>
 <script src="http://codemirror.net/addon/hint/xml-hint.js"></script>
 <script src="http://codemirror.net/addon/hint/html-hint.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
+<link rel="stylesheet" href="../../../basic/basic.css">
 <script>
+    let currentPages = [];
+    const projectInput = document.querySelector('#folders-select');
+    const fileInput = document.querySelector('#files-select');
+    const viewInput = document.querySelector('#view-select');
+    const liveInput = document.querySelector('#live-input');
+    function folderSelected() {
+        socket.emit('request-server-for-pages', projectInput.value);
+    }
+
+    function fileSelected() {
+        const path = projectInput.value;
+        const file = fileInput.value;
+        console.log('file selected', `${path}/${file}`);
+        socket.emit('request-text-from-file', `${path}/${file}`.split('.html').join('') );
+    }
+
+    socket.emit('request-server-for-folders', '');
+    setInterval(() => {
+        socket.emit('request-server-for-folders', '');
+    }, 5000);
+    socket.on('server-sent-data-folders', (folders) => {
+        const oldFolders = currentPages.join('');
+        const newFolders = folders.join('');
+        currentPages = folders;
+        if (oldFolders === newFolders) {
+            return
+        }
+        console.log('server sent folders', folders, oldFolders, newFolders);
+        const foldersSelect = projectInput;
+        foldersSelect.innerHTML = '';
+        const pagesUl = fileInput;
+        pagesUl.innerHTML = '';
+        folders.sort();
+        folders.forEach(folder => {
+            const option = document.createElement('option');
+            option.innerText = folder;
+            option.value = folder;
+            foldersSelect.appendChild(option)
+        });
+    });
+    socket.on('server-sent-data-pages', (pages) => {
+        const pagesUl = fileInput;
+        pagesUl.innerHTML = '';
+        pages.sort();
+        pages.forEach( page => {
+            const option = document.createElement('option');
+            option.innerText = page;
+            option.value = page;
+            pagesUl.appendChild(option)
+        });
+    });
     let htmlLast = '';
     let jsLast = '';
-    var myCodeMirror = CodeMirror(document.querySelector('#html'), {
+    const html1 = CodeMirror(document.querySelector('#html'), {
         lineNumbers: true,
         mode: "text/html"
     });
-    var myCodeMirror2 = CodeMirror(document.querySelector('#javascript'), {
+    const js1 = CodeMirror(document.querySelector('#javascript'), {
         lineNumbers: true,
         extraKeys: {
             "Ctrl-Space": "autocomplete"
@@ -96,100 +170,143 @@
             globalVars: true
         }
     });
-    const inputs = document.getElementsByTagName('input');
-    inputs[2].checked = true;
+
+    const html2 = CodeMirror(document.querySelector('#html2'), {
+        lineNumbers: true,
+        mode: "text/html"
+    });
+    const js2 = CodeMirror(document.querySelector('#javascript2'), {
+        lineNumbers: true,
+        extraKeys: {
+            "Ctrl-Space": "autocomplete"
+        },
+        mode: {
+            name: "javascript",
+            globalVars: true
+        }
+    });
+
     function viewChange() {
         const html = document.getElementById('html');
         const js = document.getElementById('javascript');
-        inputs[0].checked ? html.classList.remove('closed') : html.classList.add('closed');
-        inputs[1].checked ? js.classList.remove('closed') : js.classList.add('closed');
-        inputs[2].checked ? html.classList.remove('closed') || js.classList.remove('closed') : html.classList.remove('close') ||  js.classList.remove('close');
+        viewInput.value === 'html' ? html.classList.remove('closed') : html.classList.add('closed');
+        viewInput.value === 'js'  ? js.classList.remove('closed') : js.classList.add('closed');
+        viewInput.value === 'both' ? html.classList.remove('closed') || js.classList.remove('closed') : html.classList.remove('close') || js.classList.remove('close');
+        const html2 = document.getElementById('html2');
+        const js2 = document.getElementById('javascript2');
+        viewInput.value === 'html'? html2.classList.remove('closed') : html2.classList.add('closed');
+        viewInput.value === 'js' ? js2.classList.remove('closed') : js2.classList.add('closed');
+        viewInput.value === 'both' ? html2.classList.remove('closed') || js2.classList.remove('closed') : html2.classList.remove('close') || js2.classList.remove('close');
     }
 </script>
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="../../../basic/basic.js"></script>
-<link rel="stylesheet" href="../../../basic/basic.css">
 <script>
     const redirect = window.location.href.split('/');
-    let liveCoding = inputs[3].checked;
+    let liveCoding = viewInput.checked;
     socket.on('connect', () => {
-        socket.emit('request-text-from-file', redirect.slice(redirect.length -2).join('/'));
+        socket.emit('request-text-from-file', redirect.slice(redirect.length - 2).join('/'));
     });
-
     socket.on('server-show-cursor', (type, cursor, username) => {
         console.log('type,cursor,username', type, cursor, username);
         if (type === 'html') {
-            createMarker(cursor, myCodeMirror, username)
+            createMarker(cursor, html1, username)
         }
         if (type === 'js') {
-            createMarker(cursor, myCodeMirror2, username)
+            createMarker(cursor, js1, username)
         }
     });
-
-    socket.on('server-sent-data-text', ({html, js}) => {
-        console.log('i got update', {html, js});
-        myCodeMirror.setValue(html);
-        myCodeMirror2.setValue(js);
-        if (html !== htmlLast) {
-            createMarkerOriginal({ch: 0, line:4}, myCodeMirror);
+    socket.on('server-sent-data-text', ({html, js, file}) => {
+        console.log('i got update', {html, js, file});
+        if (redirect.slice(redirect.length - 2).join('/') === file) {
+            console.log('html', html, 'value', html1.getValue());
+            htmlLast = html;
+            jsLast = js;
+            const currentHtml = html1.getValue();
+            const currentJs = js1.getValue();
+            if (currentHtml !== html) {
+                html1.setValue(html);
+                createMarkerOriginal({ch: 0, line: 4}, html1);
+            }
+            if (currentJs !== js) {
+                js1.setValue(js);
+                createMarkerOriginal({ch: 0, line: 4}, js1);
+            }
+        } else if (file === `${projectInput.value}/${fileInput.value}`.split('.html').join('')) {
+            console.log('html2', html, 'value', html1.getValue());
+            htmlLast = html;
+            jsLast = js;
+            const currentHtml2 = html2.getValue();
+            const currentJs2 = js2.getValue();
+            if (currentHtml2 !== html) {
+                html2.setValue(html);
+                createMarkerOriginal({ch: 0, line: 4}, html2);
+            }
+            if (currentJs2 !== js) {
+                js2.setValue(js);
+                createMarkerOriginal({ch: 0, line: 4}, js2);
+            }
         }
-        if (js !== jsLast) {
-            createMarkerOriginal({ch: 0, line:4}, myCodeMirror2);
-        }
-        htmlLast = html;
-        jsLast = js;
     });
-
     socket.on('file-updated', () => {
         console.log('server sent data text ', liveCoding);
         if (liveCoding) {
 
         } else {
             console.log('i should update');
-            socket.emit('request-text-from-file', redirect.slice(redirect.length -2).join('/'));
+            socket.emit('request-text-from-file', redirect.slice(redirect.length - 2).join('/'));
         }
     });
 
     function save() {
-        const html = myCodeMirror.getValue();
-        const js = myCodeMirror2.getValue();
-        console.log('im sending', {html, js});
-        // if (html !== htmlLast || js !== jsLast)
-        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), {html, js, username: myUser.username}, liveCoding)
+        const html = html1.getValue();
+        const js = js1.getValue();
+        if (html === htmlLast && js === jsLast) {
+            return;
+        }
+        console.log('im sending', {html, js}, {htmlLast, jsLast});
+        htmlLast = html;
+        jsLast = js;
+        console.log('im sending2', {html, js}, {htmlLast, jsLast});
+        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), {
+            html,
+            js,
+            username: myUser.username
+        }, liveCoding);
+
     }
 
     function run() {
-        socket.emit('request-server-for-redirect', `live/${redirect.slice(redirect.length -2).join('/')}`);
+        socket.emit('request-server-for-redirect', `live/${redirect.slice(redirect.length - 2).join('/')}`);
     }
 
     function redirectAll() {
-        socket.emit('request-server-for-redirect-all', `editor/${redirect.slice(redirect.length -2).join('/')}`);
+        socket.emit('request-server-for-redirect-all', `editor/${redirect.slice(redirect.length - 2).join('/')}`);
     }
-    myCodeMirror.on('change', changeDetected);
-    myCodeMirror2.on('change', changeDetected);
-    myCodeMirror.on('mousedown', showCursorHTML);
-    myCodeMirror2.on('mousedown', showCursorJS);
+
+    html1.on('change', changeDetected);
+    js1.on('change', changeDetected);
+    html1.on('mousedown', showCursorHTML);
+    js1.on('mousedown', showCursorJS);
+
     function changeDetected(event) {
-        console.log('detected', myCodeMirror.getCursor());
+        console.log('detected', html1.getCursor());
         save();
     }
 
     function showCursorHTML() {
         setTimeout(() => {
-            const pos = myCodeMirror.getCursor();
+            const pos = html1.getCursor();
             console.log('pos', pos);
             socket.emit('client-show-cursor', 'html', pos, localStorage.getItem('username'))
         }, 300);
     }
+
     function showCursorJS() {
         setTimeout(() => {
-            const pos = myCodeMirror2.getCursor();
+            const pos = js1.getCursor();
             console.log('pos', pos);
-            socket.emit('client-show-cursor', 'js', pos, localStorage.getItem('username') );
+            socket.emit('client-show-cursor', 'js', pos, localStorage.getItem('username'));
         }, 300);
     }
-
 
     function createMarker(cursorPos, mirror, name) {
         const cursorCoords = mirror.cursorCoords(cursorPos);
@@ -198,7 +315,7 @@
         nameSpan.style.backgroundColor = 'red';
         nameSpan.style.position = 'absolute';
         nameSpan.style.top = '1em';
-        nameSpan.appendChild(document.createTextNode(name?name:''));
+        nameSpan.appendChild(document.createTextNode(name ? name : ''));
         cursorElement.appendChild(nameSpan);
         cursorElement.style.borderLeftStyle = 'solid';
         cursorElement.style.borderLeftWidth = '1px';
@@ -206,17 +323,15 @@
         cursorElement.style.height = `${(cursorCoords.bottom - cursorCoords.top)}px`;
         cursorElement.style.padding = 0;
         cursorElement.style.zIndex = 0;
-
 // Set the generated DOM node at the position of the cursor sent from another client
 // setBookmark first argument: The position of the cursor sent from another client
 // Second argument widget: Generated DOM node
-        const marker = mirror.setBookmark(cursorPos, { widget: cursorElement });
+        const marker = mirror.setBookmark(cursorPos, {widget: cursorElement});
         console.log('marker', marker);
         setTimeout(() => {
             marker.clear();
         }, 1000)
     }
-
 
     function createMarkerOriginal(cursorPos, mirror) {
         const cursorCoords = mirror.cursorCoords(cursorPos);
@@ -231,8 +346,7 @@
 // Set the generated DOM node at the position of the cursor sent from another client
 // setBookmark first argument: The position of the cursor sent from another client
 // Second argument widget: Generated DOM node
-        const marker = mirror.setBookmark(cursorPos, { widget: cursorElement });
+        const marker = mirror.setBookmark(cursorPos, {widget: cursorElement});
     }
-
 </script>
 </html>
