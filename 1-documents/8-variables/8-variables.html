@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Variables</title>
+    <link rel="stylesheet" href="../../shared/css/shared.css">
+
+</head>
+<body>
+
+</body>
+
+<script src="../../shared/js/log.js"></script>
+<script src="../../shared/js/page-variables.js"></script>
+<script src="../../shared/js/create-element.js"></script>
+<script src="../../shared/js/style-element.js"></script>
+<script src="../../shared/js/create-page.js"></script>
+<script src="variables-page.js"></script>
+
+<script>
+    document.body.style.margin = '0px';
+    var universe = this;
+    var solarSystem = {
+        earth: {
+            moon: {},
+            log: function () {
+                console.log(this);
+            }
+
+        },
+        log: function () {
+            console.log(this);
+        }
+    };
+    // log(this);
+
+    const solarSytem2 = {
+        name: 'milky way'
+    };
+
+     const obj = {
+         key: ''
+     };
+     const keys = Object.keys(obj);
+     keys.forEach( key => {});
+
+     keys.forEach( keys => {});
+    console.log(window.solarSystem);
+
+    solarSystem.log();
+    solarSystem.earth.log();
+</script>
+
+<!--<script src="../shared/js/documentation.js"></script>-->
+</html>
