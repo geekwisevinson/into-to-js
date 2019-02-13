@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>Quizzer</title>
     <style>
+
+
+    </style>
+    <style>
         .username, .password {
             width: 240px;
             display: flex;
@@ -20,6 +24,9 @@
             color: whitesmoke;
         }
         h1 {text-align: center}
+        button {
+            margin-left: 1em;
+        }
     </style>
 </head>
 
@@ -36,6 +43,7 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../../basic/basic.js"></script>
+<link rel="stylesheet" href="../../../basic/basic.css">
 <script>
 
     socket.on('server-sent-data-folders', (folders) => {

@@ -83,9 +83,7 @@
     let jsLast = '';
     var myCodeMirror = CodeMirror(document.querySelector('#html'), {
         lineNumbers: true,
-        mode: "text/html",
-        extraKeys: {"Ctrl-Space": "autocomplete"},
-        value: document.documentElement.innerHTML
+        mode: "text/html"
     });
     var myCodeMirror2 = CodeMirror(document.querySelector('#javascript'), {
         lineNumbers: true,
@@ -110,6 +108,7 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../../basic/basic.js"></script>
+<link rel="stylesheet" href="../../../basic/basic.css">
 <script>
     const redirect = window.location.href.split('/');
     let liveCoding = inputs[3].checked;
@@ -127,12 +126,8 @@
         }
     });
 
-    socket.on('server-sent-data-text', (text) => {
-        console.log('i got update', text);
-        let html = '';
-        let js = '';
-        html += text.substring(0, text.includes('<script>') ? text.indexOf('<script>') : text.length);
-        js += text.includes('<script>') ? text.substring(text.indexOf('<script>') + 8, text.length - 10): '';
+    socket.on('server-sent-data-text', ({html, js}) => {
+        console.log('i got update', {html, js});
         myCodeMirror.setValue(html);
         myCodeMirror2.setValue(js);
         if (html !== htmlLast) {
@@ -141,9 +136,11 @@
         if (js !== jsLast) {
             createMarkerOriginal({ch: 0, line:4}, myCodeMirror2);
         }
+        htmlLast = html;
+        jsLast = js;
     });
 
-    socket.on('file-updated', (text) => {
+    socket.on('file-updated', () => {
         console.log('server sent data text ', liveCoding);
         if (liveCoding) {
 
@@ -154,12 +151,10 @@
     });
 
     function save() {
-        let result = myCodeMirror.getValue();
-        result += '<script>';
-        result += myCodeMirror2.getValue();
-        result += `<`;
-        result += '/script>';
-        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), result, liveCoding)
+        const html = myCodeMirror.getValue();
+        const js = myCodeMirror2.getValue();
+        console.log('im sending', {html, js});
+        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), {html, js}, liveCoding)
     }
 
     function run() {

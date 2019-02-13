@@ -24,14 +24,14 @@
         }
         h1 {text-align: center}
         button {
-            margin: 1em;
+            margin-left: 1em;
         }
     </style>
 </head>
 <body>
 
 </div>
-<h1>Pages 1</h1>
+<h1>Pages</h1>
 
 <div>
     <h3>Pages</h3>
@@ -41,6 +41,7 @@
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../../basic/basic.js"></script>
+<link rel="stylesheet" href="../../../basic/basic.css">
 <script>
     const path = window.location.href.split('/').pop();
     socket.on('server-sent-data-pages', (pages) => {
@@ -59,7 +60,6 @@
             const button = document.createElement('button');
             li.appendChild(button);
             button.innerText = 'edit';
-
             // action
             button.addEventListener('click', function () {
                 socket.emit('request-server-for-redirect', 'editor/'+ project + '/' + shortName);

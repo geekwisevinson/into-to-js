@@ -9,6 +9,8 @@ const app = express ();
 const http = require ( 'http' ).Server ( app );
 const port = 7000;
 const io = require ( 'socket.io' ) ( http );
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 app.use ( cors () );
 http.listen ( port, function () {
     console.log ( 'listening on', port );
@@ -72,9 +74,8 @@ function sendUsers() {
     const keys = Object.keys(users);
     console.log('keys', keys);
     const userSockets = keys.map( key => ({ [key] : users[key].socketID ? users[key].socketID: ''}) );
-    console.log('usersSockets', userSockets);
+
     io.emit('users', userSockets);
-    console.log("users", users);
 }
 io.on ( 'connection', function (socket) {
     console.log('*****');
@@ -106,20 +107,73 @@ io.on ( 'connection', function (socket) {
         requestServerForFolders(socket, path);
     });
     socket.on('request-text-from-file', function(path){
+        console.log("*********************Request***********");
         const built = __dirname + '/public/feature/projects/' + `${path}.html`;
-        const content = fs.readFileSync(built, 'utf8').split('body>')[1];
-        const final = content.substring(0, content.length -2);
-        io.to(socket.id).emit('server-sent-data-text', final);
+        const content = fs.readFileSync(built, 'utf8');
+        console.log('from disk', content);
+        const dom = new JSDOM(content);
+        let js = '';
+        const links = dom.window.document.getElementsByTagName('script');
+        Array.from(links).forEach( link => {
+            dom.window.document.getElementsByTagName('html')[0].appendChild(link);
+        });
+        const scripts = dom.window.document.getElementsByTagName('script');
+        Array.from(scripts).forEach( script => {
+            const dom = new JSDOM(content);
+            if (script.src) {
+            } else {
+                js += script.innerHTML;
+            }
+            script.remove();
+        });
+        const rx = new RegExp("<script[\\d\\D]*?\/script>", "g");
+        console.log('from disk', content);
+        const html = content.includes('<body>') ? content.substring(content.indexOf('<body>') + 6, content.indexOf('</body>')).replace(rx, '') : '';
+        io.to(socket.id).emit('server-sent-data-text', {html, js});
+        console.log("*********************//Request***********");
     });
-    socket.on('request-to-save-text', function(path, data, liveCoding){
+    socket.on('request-to-save-text', function(path, {html, js}, liveCoding){
+        console.log("*********************Save***********");
+        console.log('html', html, 'js', js);
+        let replacedHtml = html.replace('&lt;','<');
+        replacedHtml = replacedHtml.replace('&gt;', '>');
+        console.log('replaced', replacedHtml);
+        debugger;
         const file = __dirname + `/public/feature/projects/${path}.html`;
-        const template = fs.readFileSync(__dirname+ '/public/feature/templates/page-template.html', 'utf8').split('<body>');
-        template.splice(1, 0, '<body>'+ data.trim());
-        const result = template.join('').trim();
+        // get template
+        const template = fs.readFileSync(__dirname+ '/public/feature/templates/page-template.html', 'utf8');
+        console.log('************');
+        console.log('before>>>> ', template);
+        const dom = new JSDOM(template);
+        const links = dom.window.document.getElementsByTagName('link');
+        const inlineScript = dom.window.document.createElement('script');
+        Array.from(links).forEach(link => {
+            dom.window.document.documentElement.appendChild(link);
+            link.remove();
+        });
+        const scripts = dom.window.document.getElementsByTagName('script');
+        Array.from(scripts).forEach(script => {
+            if (script.src) {
+                dom.window.document.documentElement.appendChild(script);
+            } else {
+                inlineScript.innerHTML += script.innerHTML;
+            }
+        });
+        inlineScript.innerHTML += js;
+        dom.window.document.documentElement.appendChild(inlineScript);
+        inlineScript.setAttribute('id', 'inline-js');
+        dom.window.document.body.innerHTML = '';
+
+        const beforeHtml = `<!doctype html>
+<html lang="en">${dom.window.document.documentElement.innerHTML}</html>`;
+        console.log('************');
+        const result = beforeHtml.split('<body>').join(`<body>${replacedHtml}`);
+        console.log('after>>>>>', result);
         fs.writeFileSync(file, result);
         if (liveCoding) {
             io.emit('file-updated', 'hello friends!');
         }
+        console.log("*********************///Save***********");
     });
     socket.on('client-show-cursor', function(type, cursor, username) {
         io.emit('server-show-cursor', type, cursor, username);
@@ -128,7 +182,6 @@ io.on ( 'connection', function (socket) {
         if (socket.username) {
             users[socket.username].location = location;
         }
-        console.log("users", users);
     });
     socket.on('disconnect', function() {
         if (socket.username) {
@@ -163,8 +216,6 @@ function clientWouldLikeToSignUp(socket, username, password) {
     const userConfigs = fs.readdirSync(__dirname + '/public/users')
         .filter( user => user.includes('.json') )
         .map( user => user.substring(0, user.indexOf('.json')) );
-    console.log('userConfigs', userConfigs);
-    console.log(username, password);
     if (userConfigs.includes(username)) {
         console.log('user already exists!');
         socket.emit('error-message', 'User already exists!');
@@ -185,10 +236,8 @@ function clientWouldLikeToLogin(socket, username, password) {
     const userConfigs = fs.readdirSync(__dirname + '/public/users')
         .filter( user => user.includes('.json') )
         .map( user => user.substring(0, user.indexOf('.json')) );
-    console.log('userConfigs', userConfigs);
     console.log(username, password);
     if (userConfigs.includes(username)) {
-        console.log('get user config');
         const path = __dirname + '/public/users/' + `${username}.json`;
         const user = JSON.parse(fs.readFileSync(path, 'utf8') );
         console.log(user);
@@ -212,7 +261,6 @@ function clientWouldLikeToLogin(socket, username, password) {
     }
 }
 function saveLogin(user, socket) {
-    console.log('save login', user);
     io.to(user.socketID).emit('server-sent-login', {username: user.username, token: user.token});
     users[user.username] = {token: user.token, socketID: user.socketID};
     tokens[user.token] = {username: user.username, socketID: user.socketID}
