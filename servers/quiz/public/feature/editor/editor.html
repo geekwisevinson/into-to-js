@@ -47,6 +47,7 @@
         <input type="radio" name="view" value="both">
         Live
         <input type="checkbox" onchange="liveCoding = this.checked">
+        <button onclick="redirectAll()">Redirect All</button>
     </fieldset>
 
 </div>
@@ -161,6 +162,9 @@
         socket.emit('request-server-for-redirect', `live/${redirect.slice(redirect.length -2).join('/')}`);
     }
 
+    function redirectAll() {
+        socket.emit('request-server-for-redirect-all', `editor/${redirect.slice(redirect.length -2).join('/')}`);
+    }
     myCodeMirror.on('change', changeDetected);
     myCodeMirror2.on('change', changeDetected);
     myCodeMirror.on('mousedown', showCursorHTML);

@@ -100,6 +100,10 @@ io.on ( 'connection', function (socket) {
         console.log(`client requested a redirect to ${page}`);
         io.to(socket.id).emit('client-should-redirect', page);
     });
+    socket.on( 'request-server-for-redirect-all', function (page) {
+        console.log(`client requested all redirect to ${page}`);
+        io.emit('client-should-redirect', page);
+    });
     socket.on('request-server-for-pages', function(path){
         requestServerForPages(socket, path);
     });
