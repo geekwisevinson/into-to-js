@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+</head>
+<body><ul>
+</ul></body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js">let changed = false;
+const ul = document.getElementsByTagName('ul')[0];
+lastData = {};
+socket.on('users', function(users) {
+  changed = false;
+  console.log(users);
+  users.forEach( user => {
+      	const username = Object.keys(user)[0];
+      	const online = user[username] ? '--online' : '--offline';
+        console.log('username', username, 'online', online);
+      	if (!lastData[username] || lastData[username] !== online) {
+      	    console.log('true');
+        	changed = true;
+        	lastData[username] = online;
+        }
+    });
+  if (changed === false) return;
+  ul.innerHTML = '';
+ 	users.forEach( user => {
+        const username = Object.keys(user)[0];
+        const online = user[username] ? '--online' : '--offline';
+ 	    const li = document.createElement('li');
+     console.log('username', username);
+      ul.appendChild(li); 
+      li.appendChild(document.createTextNode(username));
+       li.appendChild(document.createTextNode(online));
+    });
+});
+          
+          </script></html>

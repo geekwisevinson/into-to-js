@@ -3,4 +3,47 @@
     <meta charset="UTF-8">
     <title>Quizzer</title>
 </head>
-<body><p>test</p></body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js">const test = 1;</script></html>
+<body>
+    socket.on('m', function () {
+       
+    });
+    socket.on('client-would-like-to-login', function ({username, password}) {
+        clientWouldLikeToLogin(socket, username, password);
+    });
+    socket.on( 'request-server-for-redirect', function (page) {
+        console.log(`client requested a redirect to ${page}`);
+        io.to(socket.id).emit('client-should-redirect', page);
+    });
+    socket.on( 'request-server-for-redirect-all', function (page) {
+        console.log(`client requested all redirect to ${page}`);
+        io.emit('client-should-redirect', page);
+    });
+    socket.on('request-server-for-pages', function(path){
+        requestServerForPages(socket, path);
+    });
+    socket.on('request-server-for-folders', function(path){
+        requestServerForFolders(socket, path);
+    });
+    socket.on('request-text-from-file', function(path){
+        console.log("*********************Request***********");
+        const built = __dirname + '/public/feature/projects/' + `${path}.html`;
+        const content = fs.readFileSync(built, 'utf8');
+        console.log('from disk', content);
+        const dom = new JSDOM(content);
+        let js = '';
+        const links = dom.window.document.getElementsByTagName('script');
+        Array.from(links).forEach( link => {
+            dom.window.document.getElementsByTagName('html')[0].appendChild(link);
+        });
+        const scripts = dom.window.document.getElementsByTagName('script');
+        Array.from(scripts).forEach( script => {
+            const dom = new JSDOM(content);
+            if (script.src) {
+            } else {
+                js += script.innerHTML;
+            }
+            script.remove();
+        });
+        const rx = new RegExp("", "g");
+        console.log('from disk', content);
+        const html = content.includes('<body>') ? content.substring(content.indexOf('<body>') + 6, content.indexOf('</body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js">console.log('Hello');</script></html>

@@ -11,6 +11,7 @@ const port = 7000;
 const io = require ( 'socket.io' ) ( http );
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
+const pages = [];
 app.use ( cors () );
 http.listen ( port, function () {
     console.log ( 'listening on', port );
@@ -19,8 +20,7 @@ app.use(express.static(__dirname + '/public'));
 // users
 const users = {};
 const tokens = {};
-// get pages
-const pages = [];
+
 // Serve Files
 function loadPagesRoutes() {
     pages.forEach( page => {
@@ -68,7 +68,7 @@ function addCatchRoute() {
 }
 // Socket messages
 setInterval( () => {
-    // sendUsers();
+    sendUsers();
 }, 10000);
 function sendUsers() {
     const keys = Object.keys(users);
@@ -78,18 +78,14 @@ function sendUsers() {
     io.emit('users', userSockets);
 }
 io.on ( 'connection', function (socket) {
-    console.log('*****');
-    console.log('sockets', Object.keys(io.sockets.sockets));
     const userConfigs = fs.readdirSync(__dirname + '/public/users')
         .map( user => user.substring(0, user.indexOf('.json')));
     userConfigs.forEach( user => {
         if (!users[user]) {
-            console.log('users');
             users[user] = '';
         }
     });
     sendUsers();
-    console.log('users', users);
     socket.on('client-would-like-to-sign-up', function ({username, password}) {
         clientWouldLikeToSignUp(socket, username, password)
     });
@@ -97,7 +93,6 @@ io.on ( 'connection', function (socket) {
         clientWouldLikeToLogin(socket, username, password);
     });
     socket.on( 'request-server-for-redirect', function (page) {
-        console.log(`client requested a redirect to ${page}`);
         io.to(socket.id).emit('client-should-redirect', page);
     });
     socket.on( 'request-server-for-redirect-all', function (page) {
@@ -111,10 +106,11 @@ io.on ( 'connection', function (socket) {
         requestServerForFolders(socket, path);
     });
     socket.on('request-text-from-file', function(path){
-        console.log("*********************Request***********");
         const built = __dirname + '/public/feature/projects/' + `${path}.html`;
+        if (!fs.existsSync(built)) {
+            return;
+        }
         const content = fs.readFileSync(built, 'utf8');
-        console.log('from disk', content);
         const dom = new JSDOM(content);
         let js = '';
         const links = dom.window.document.getElementsByTagName('script');
@@ -131,23 +127,16 @@ io.on ( 'connection', function (socket) {
             script.remove();
         });
         const rx = new RegExp("<script[\\d\\D]*?\/script>", "g");
-        console.log('from disk', content);
         const html = content.includes('<body>') ? content.substring(content.indexOf('<body>') + 6, content.indexOf('</body>')).replace(rx, '') : '';
         io.to(socket.id).emit('server-sent-data-text', {html, js});
-        console.log("*********************//Request***********");
     });
     socket.on('request-to-save-text', function(path, {html, js}, liveCoding){
-        console.log("*********************Save***********");
-        console.log('html', html, 'js', js);
         let replacedHtml = html.replace('&lt;','<');
         replacedHtml = replacedHtml.replace('&gt;', '>');
-        console.log('replaced', replacedHtml);
         debugger;
         const file = __dirname + `/public/feature/projects/${path}.html`;
         // get template
         const template = fs.readFileSync(__dirname+ '/public/feature/templates/page-template.html', 'utf8');
-        console.log('************');
-        console.log('before>>>> ', template);
         const dom = new JSDOM(template);
         const links = dom.window.document.getElementsByTagName('link');
         const inlineScript = dom.window.document.createElement('script');
@@ -170,14 +159,11 @@ io.on ( 'connection', function (socket) {
 
         const beforeHtml = `<!doctype html>
 <html lang="en">${dom.window.document.documentElement.innerHTML}</html>`;
-        console.log('************');
         const result = beforeHtml.split('<body>').join(`<body>${replacedHtml}`);
-        console.log('after>>>>>', result);
         fs.writeFileSync(file, result);
         if (liveCoding) {
             io.emit('file-updated', 'hello friends!');
         }
-        console.log("*********************///Save***********");
     });
     socket.on('client-show-cursor', function(type, cursor, username) {
         io.emit('server-show-cursor', type, cursor, username);
@@ -186,6 +172,24 @@ io.on ( 'connection', function (socket) {
         if (socket.username) {
             users[socket.username].location = location;
         }
+    });
+
+    socket.on('request-server-add-page', function (path) {
+        const file = __dirname + `/public/feature/projects/${path}.html`;
+        fs.writeFileSync(file, '');
+    });
+
+    socket.on('request-server-add-project', function (path) {
+        const folder = __dirname + `/public/feature/projects/${path}`;
+        if (!fs.existsSync(folder)){
+            fs.mkdirSync(folder);
+        }
+    });
+
+    socket.on('send-message', function ({username, message}) {
+       if (username && users[username]) {
+           io.to(users[username].socketID).emit('server-sent-message', message);
+       }
     });
     socket.on('disconnect', function() {
         if (socket.username) {
@@ -196,7 +200,6 @@ io.on ( 'connection', function (socket) {
 function removePath(path) {
     return function removeMiddleWares(route, i, routes) {
         if (route.handle.name.indexOf('.html') > -1) {
-            console.log( 'route.handle.name:', route.handle.name );
         }
         switch (route.handle.name) {
             case path:
@@ -221,12 +224,9 @@ function clientWouldLikeToSignUp(socket, username, password) {
         .filter( user => user.includes('.json') )
         .map( user => user.substring(0, user.indexOf('.json')) );
     if (userConfigs.includes(username)) {
-        console.log('user already exists!');
         socket.emit('error-message', 'User already exists!');
     } else {
-        console.log('create a user config');
         if (password.length < 2) {
-            console.log('failed because of password');
             socket.emit('error-message', 'Your password has to be at least 3 characters long');
         }
         const token = Buffer.from(username + password).toString('base64');
@@ -240,27 +240,19 @@ function clientWouldLikeToLogin(socket, username, password) {
     const userConfigs = fs.readdirSync(__dirname + '/public/users')
         .filter( user => user.includes('.json') )
         .map( user => user.substring(0, user.indexOf('.json')) );
-    console.log(username, password);
     if (userConfigs.includes(username)) {
         const path = __dirname + '/public/users/' + `${username}.json`;
         const user = JSON.parse(fs.readFileSync(path, 'utf8') );
-        console.log(user);
         user.token = user.password;
         user.socketID = socket.id;
         if (user.password === Buffer.from(username + password).toString('base64')) {
-            console.log('we have a match');
             saveLogin(user, socket);
-            console.log('logged in with password')
         } else if(user.password === password) {
-            console.log('we have a match');
             saveLogin(user, socket);
-            console.log('logged in with token')
         } else {
-            console.log('can not verify your password');
             socket.emit('error-message', 'Can not verify your password');
         }
     } else {
-        console.log('user does not exists!');
         socket.emit('error-message', `Can not find an account for ${username}. Sign up.`);
     }
 }
@@ -273,7 +265,6 @@ function saveLogin(user, socket) {
 }
 function requestServerForPages(socket, path) {
     const root = __dirname + '/public/' + 'feature/projects/';
-    console.log('path');
     const testPages = fs.readdirSync(root + path).filter( page => page.includes('.html') );
     testPages.forEach( page => {
         if (pages.indexOf(page) < 0) {
@@ -283,7 +274,6 @@ function requestServerForPages(socket, path) {
     });
     pages.forEach( page => {
         if (testPages.indexOf(page) < 0) {
-            console.log('a route is gone!!', page);
             pages.splice(pages.indexOf(page), 1);
             const routes = app._router.stack;
             routes.forEach(removePath(page));
@@ -300,8 +290,6 @@ function requestServerForFolders(socket, path) {
     io.to(socket.id).emit('server-sent-data-folders', folders);
 }
 function createRoute( name, path) {
-    console.log('name', name, 'path', path);
-    console.log('new route', name);
     const myFunction = function(req, res){
         res.sendFile(path);
     };
