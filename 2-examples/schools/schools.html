@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schools</title>
+</head>
+<body>
+<form>
+    <div>How old are you?</div>
+    <input id="age" type="number">
+    <div>What School are you a member of?</div>
+    <fieldset id="school">
+        <label for="geekwise">Geekwise</label>
+        <input id="geekwise" type="radio" value="value1" name="school">
+        <label for="other">Some other school</label>
+        <input id="other" type="radio" value="value2" name="school">
+    </fieldset>
+    <div>Do you like to code?</div>
+    <fieldset id="group2">
+        <label for="full">I love it!</label>
+        <input id="full" type="radio" value="value1" name="group2">
+        <label for="part">It's ok</label>
+        <input id="part" type="radio" value="value2" name="group2">
+        <label for="nope">Nope.</label>
+        <input id="nope" type="radio" value="value3" name="group2">
+    </fieldset>
+</form>
+    <h3>Click me if you are older than "18" OR you go to "geekwise" OR you at least like to code.</h3>
+    <button onclick="button1()">Click me</button>
+    <h3>Click me if you go to Geekwise and your over 18 OR you go to another school but you love to code.</h3>
+    <button onclick="button2()">Click me</button>
+    <h3>Click me if you go to Geekwise AND your over 18 AND you love to code</h3>
+    <button onclick="button3()">Click me</button>
+<script >
+    var answers = {
+
+    };
+    const form = document.getElementsByTagName('form')[0];
+    form.addEventListener('input', (event) => {
+       const inputs = document.getElementsByTagName('input');
+       Array.prototype.forEach.call(inputs, input => {
+           if (input.type === 'radio') {
+               answers[input.id] = input.checked;
+           } else if (input.type === 'number') {
+               answers[input.id] = Number(input.value);
+           }
+       });
+       console.log('answers', answers);
+    });
+
+    function button1() {
+        if (answers.age > 17 || answers.geekwise || answers.part || answers.full) {
+            alert('You Have access!')
+        } else {
+            alert( 'You have to be 18 ||(or) you have to go to geekwise ||(or) you have to love code!')
+        }
+    }
+
+    function button2() {
+        if ( (answers.age > 17 && answers.geekwise) || (answers.full && answers.other )) {
+            alert('You Have access!')
+        } else {
+            alert( 'You have to have be 18 &&(and) go to Geekwise ||(or) you have to go to another school &&(and) love code!')
+        }
+    }
+
+    function button3() {
+        if ( (answers.age > 17 && answers.geekwise && answers.full ) ) {
+            alert('You Have access!')
+        } else {
+            alert( 'You have to have be 18 &&(and) go to Geekwise ||(or) you have to go to another school &&(and) love code!')
+        }
+    }
+</script>
+</body>
+</html>
