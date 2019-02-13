@@ -1,4 +1,5 @@
 const socket = io();
+let myUser = {};
 const colorSchemes = [
     ['#f4cc70', '#20948b', '#de7a22', '#6ab187'],
     ['#34675c', '#4CB5F5', '#b3c100', '#b7b8b6'],
@@ -71,6 +72,8 @@ socket.on('server-sent-login', ({username, token}) => {
     document.querySelector('#logged-in').innerHTML = username;
     document.querySelector('#token').innerHTML = token;
     createLogoutButton();
+    myUser.username = username;
+    myUser.token = token;
     socket.emit('client-location', urlArray.join('/'));
 });
 

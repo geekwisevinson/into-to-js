@@ -155,7 +155,8 @@
         const html = myCodeMirror.getValue();
         const js = myCodeMirror2.getValue();
         console.log('im sending', {html, js});
-        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), {html, js}, liveCoding)
+        // if (html !== htmlLast || js !== jsLast)
+        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), {html, js, username: myUser.username}, liveCoding)
     }
 
     function run() {

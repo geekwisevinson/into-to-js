@@ -1,6 +1,7 @@
 "use strict";
 /*global __dirname*/
 // SETUP
+let saves = 0;
 const express = require ( 'express' );
 const cors = require ( 'cors' );
 const fs = require ( 'fs' );
@@ -72,7 +73,6 @@ setInterval( () => {
 }, 10000);
 function sendUsers() {
     const keys = Object.keys(users);
-    console.log('keys', keys);
     const userSockets = keys.map( key => ({ [key] : users[key].socketID ? users[key].socketID: ''}) );
 
     io.emit('users', userSockets);
@@ -130,7 +130,9 @@ io.on ( 'connection', function (socket) {
         const html = content.includes('<body>') ? content.substring(content.indexOf('<body>') + 6, content.indexOf('</body>')).replace(rx, '') : '';
         io.to(socket.id).emit('server-sent-data-text', {html, js});
     });
-    socket.on('request-to-save-text', function(path, {html, js}, liveCoding){
+    socket.on('request-to-save-text', function(path, {html, js, username}, liveCoding){
+        saves++;
+        console.log('saves', saves, username);
         let replacedHtml = html.replace('&lt;','<');
         replacedHtml = replacedHtml.replace('&gt;', '>');
         debugger;
