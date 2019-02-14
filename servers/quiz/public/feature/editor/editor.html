@@ -113,9 +113,7 @@
     const liveInput = document.querySelector('#live-input');
     function folderSelected() {
         document.getElementById('path-divide').innerHTML = '';
-        html1.setValue('');
         html2.setValue('');
-        js1.setValue('');
         js2.setValue('');
         socket.emit('request-server-for-pages', projectInput.value);
     }
@@ -123,7 +121,7 @@
     function fileSelected() {
         const path = projectInput.value;
         const file = fileInput.value;
-        console.log('file selected', `${path}/${file}`);
+        selectedFile = localStorage.setItem('selectedFile', fileInput.value);
         socket.emit('request-text-from-file', `${path}/${file}`.split('.html').join('') );
     }
 
@@ -138,20 +136,22 @@
         if (oldFolders === newFolders) {
             return
         }
-        console.log('server sent folders', folders, oldFolders, newFolders);
         const foldersSelect = projectInput;
         foldersSelect.innerHTML = '<option>--select-project--</option>';
         const pagesUl = fileInput;
         pagesUl.innerHTML = '<option value="">--select-file--';
-
         folders.sort();
-
         folders.forEach(folder => {
             const option = document.createElement('option');
             option.innerText = folder;
             option.value = folder;
             foldersSelect.appendChild(option)
         });
+        if (folders.includes(selectedProject)) {
+            projectInput.value = selectedProject;
+            socket.emit('request-server-for-pages', selectedProject);
+        }
+
     });
     socket.on('server-sent-data-pages', (pages) => {
         const pagesUl = fileInput;
@@ -163,6 +163,12 @@
             option.value = page;
             pagesUl.appendChild(option)
         });
+        if (pages.includes(selectedFile)) {
+            fileInput.value = selectedFile;
+            console.log('requesting', `${selectedProject}/${selectedFile}` );
+            socket.emit('request-text-from-file', `${selectedProject}/${selectedFile}`.replace('.html', '') );
+        }
+
     });
     let htmlLast = '';
     let htmlLast2 = '';
@@ -245,10 +251,33 @@
             createMarker(cursor, js1, username)
         }
     });
-    socket.on('server-sent-data-text', ({html, js, file, updatedState}) => {
-        console.log('i got update', {html, js, file, updatedState});
+    socket.on('server-sent-data-text', ({html, js, file, payload}) => {
+        console.log('server sent data text', file);
+        console.log('i got update', {html, js, file, payload});
+        console.log('does it have a state?', payload);
+
         if (redirect.slice(redirect.length - 2).join('/') === file) {
-            console.log('html', html, 'value', html1.getValue());
+            if (payload && payload.changed) {
+                console.log('it does');
+                console.log('do i have a time for this file');
+                if (currentState[payload.changed.type + '1'].time) {
+                    console.log('i do');
+                    console.log('is it newer than my time');
+                    if (new Date(payload.changed.time) > new Date(currentState[payload.changed.type + '1'].time)) {
+                        console.log('it is newer')
+                    } else {
+                        console.log('it is not newer');
+                        return;
+                    }
+                    console.log('myTime', currentState[payload.changed.type + '1'].time );
+                    console.log('newTime', payload.changed.time);
+                } else {
+                    console.log('i do not!');
+                }
+
+            } else {
+                console.log('it does not');
+            }
             htmlLast = html;
             jsLast = js;
             const currentHtml = html1.getValue();
@@ -256,7 +285,6 @@
             if (currentHtml !== html) {
                 const currentCursor = html1.getCursor();
                 html1.setValue(html);
-                console.log('current cursor', currentCursor);
                 html1.setCursor(currentCursor);
             }
             if (currentJs !== js) {
@@ -268,6 +296,27 @@
         } else if (file === `${projectInput.value}/${fileInput.value}`.split('.html').join('')) {
             document.querySelector('#path-divide').innerHTML = `${projectInput.value}/${fileInput.value}`;
             console.log('html2', html, 'value', html1.getValue());
+            if (payload && payload.changed) {
+                console.log('it does');
+                console.log('do i have a time for this file');
+                if (currentState[payload.changed.type + '2'].time) {
+                    console.log('i do');
+                    console.log('is it newer than my time');
+                    if (new Date(payload.changed.time) > new Date(currentState[payload.changed.type + '2'].time)) {
+                        console.log('it is newer')
+                    } else {
+                        console.log('it is not newer');
+                        return;
+                    }
+                    console.log('myTime', currentState[payload.changed.type + '2'].time );
+                    console.log('newTime', payload.changed.time);
+                } else {
+                    console.log('i do not!');
+                }
+
+            } else {
+                console.log('it does not');
+            }
             htmlLast2 = html;
             jsLast2 = js;
             const currentHtml2 = html2.getValue();
@@ -286,43 +335,47 @@
             }
         }
     });
-    socket.on('file-updated', (file, updatedState) => {
-        console.log('server sent data text ', liveCoding);
+    socket.on('file-updated', (file, payload) => {
+        console.log('file updated ', liveCoding);
         if (false) {
 
         } else {
             console.log('i should update', file);
-            socket.emit('request-text-from-file', file, updatedState);
+            socket.emit('request-text-from-file', file, payload);
         }
     });
 
-    function save() {
-        console.log('save1')
+    function save(cm) {
+        console.log('save1 attempted');
         const html = html1.getValue();
         const js = js1.getValue();
         if (html === htmlLast && js === jsLast) {
+            console.log('files are the same as last');
             return;
         }
-        console.log('im sending1', {html, js}, {htmlLast, jsLast});
         htmlLast = html;
         jsLast = js;
-        console.log('my user', myUser)
-        currentState.html1.time = new Date().toISOString();
-        currentState.html1.cursor = html1.getCursor();
-        currentState.js1.time = new Date().toISOString();
-        currentState.js1.cursor = js1.getCursor();
+        const changed = {
+            type: cm.cmName.includes('html') ? 'html' : 'js',
+            time: new Date().toISOString(),
+            file: redirect.slice(-2).join('/'),
+            username: myUser.username,
+            cursor: cm.getCursor(),
+        };
         const payload = {
             html,
             js,
             username: myUser.username,
             updatedState: currentState,
+            changed
         };
+        currentState[changed.type === 'html' ? 'html1': 'js1'].time = changed.time;
         console.log('im sending1', payload, );
         socket.emit('request-to-save-text', redirect.slice(-2).join('/'), payload, liveCoding);
 
     }
 
-    function save2() {
+    function save2(cm) {
         console.log('save2');
         const html = html2.getValue();
         const js = js2.getValue();
@@ -339,14 +392,21 @@
         currentState.html2.cursor = html2.getCursor();
         currentState.js2.time = new Date().toISOString();
         currentState.js2.cursor = js2.getCursor();
+        const changed = {
+            type: cm.cmName.includes('html') ? 'html' : 'js',
+            time: new Date().toISOString(),
+            file: filePath,
+            username: myUser.username,
+        };
         const payload = {
             html,
             js,
             username: myUser.username,
-            filePath,
-            currentState,
+            updatedState: currentState,
+            changed
         };
-        console.log('im sending2', payload, {htmlLast2, jsLast2});
+        currentState[changed.type === 'html' ? 'html2': 'js2'].time = changed.time;
+        console.log('im sending2', payload, );
         socket.emit('request-to-save-text', filePath, payload, liveCoding);
 
     }
@@ -370,12 +430,10 @@
     js1.on('mousedown', showCursorJS);
 
     function changeDetected(cm) {
-        console.log('detected', cm.cmName);
-        console.log(this, cm);
         if (cm.cmName.indexOf('1') > 0) {
-            save();
+            save(cm);
         } else {
-            save2();
+            save2(cm);
         }
     }
 
@@ -435,5 +493,7 @@
 // Second argument widget: Generated DOM node
         const marker = mirror.setBookmark(cursorPos, {widget: cursorElement});
     }
+    projectInput.value = selectedProject;
+    fileInput.value = selectedFile;
 </script>
 </html>

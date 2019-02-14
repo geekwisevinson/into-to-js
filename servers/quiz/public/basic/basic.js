@@ -1,5 +1,7 @@
 const socket = io();
 let myUser = {};
+let selectedProject = localStorage.getItem('selectedProject');
+let selectedFile = localStorage.getItem('selectedFile');
 const colorSchemes = [
     ['#f4cc70', '#20948b', '#de7a22', '#6ab187'],
     ['#34675c', '#4CB5F5', '#b3c100', '#b7b8b6'],
@@ -26,6 +28,7 @@ function createLogoutButton() {
         localStorage.setItem('token', '');
         const username = localStorage.getItem('username');
         const token = localStorage.getItem('token');
+
         this.remove();
         socket.emit('request-server-for-redirect', 'home');
     });
