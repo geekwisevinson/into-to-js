@@ -94,7 +94,7 @@ io.on ( 'connection', function (socket) {
     socket.on('request-server-for-folders', function(path){
         requestServerForFolders(socket, path);
     });
-    socket.on('request-text-from-file', function(path){
+    socket.on('request-text-from-file', function(path, updatedState){
         console.log('request for file', path );
         const built = __dirname + '/public/feature/projects/' + `${path}.html`;
         debugger;
@@ -120,10 +120,10 @@ io.on ( 'connection', function (socket) {
         });
         const rx = new RegExp("<script[\\d\\D]*?\/script>", "g");
         const html = content.includes('<body>') ? content.substring(content.indexOf('<body>') + 6, content.indexOf('</body>')).replace(rx, '') : '';
-        io.to(socket.id).emit('server-sent-data-text', {html, js, file: path});
+        io.to(socket.id).emit('server-sent-data-text', {html, js, file: path, updatedState});
     });
-    socket.on('request-to-save-text', function(path, {html, js, username}, liveCoding){
-        console.log('attempt', saves, username);
+    socket.on('request-to-save-text', function(path, {html, js, username, updatedState}, liveCoding){
+        console.log('attempt', saves, username, {html, js, username, updatedState});
         let replacedHtml = html.replace('&lt;','<');
         replacedHtml = replacedHtml.replace('&gt;', '>');
         const file = __dirname + `/public/feature/projects/${path}.html`;
@@ -156,14 +156,10 @@ io.on ( 'connection', function (socket) {
         if (oldValue === result) {return}
         fs.writeFileSync(file, result);
         saves++;
-        console.log('succeeded', saves, username);
-        console.log('oldValue **************');
-        console.log(oldValue);
-        console.log('result *************');
-        console.log(result);
+        console.log('saved', file, result);
         // console.log('users', Object.keys(io.sockets.sockets));
-        if (liveCoding) {
-            io.emit('file-updated', file);
+        if (true) {
+            io.emit('file-updated', path, updatedState);
         }
     });
     socket.on('client-show-cursor', function(type, cursor, username) {

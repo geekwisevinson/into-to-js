@@ -46,4 +46,4 @@
         });
         const rx = new RegExp("", "g");
         console.log('from disk', content);
-        const html = content.includes('<body>') ? content.substring(content.indexOf('<body>') + 6, content.indexOf('</body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js">console.log('Hello');</script></html>
+        const html = content.includes('<body>') ? content.substring(content.indexOf('<body>') + 6, content.indexOf('</body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js"></script></html>

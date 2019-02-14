@@ -58,9 +58,11 @@
         <button onclick="redirectAll()">Redirect All</button>
         Project
         <select id="folders-select" onchange="folderSelected()">
+            <option value="">--select-project--</option>
         </select>
         File
         <select id="files-select" onchange="fileSelected()">
+            <option value="">--select-file--</option>
         </select>
 
     </fieldset>
@@ -76,6 +78,7 @@
             JavaScript
         </div>
         <div id="html2">
+            <div id="path-divide"></div>
             HTML
         </div>
         <!--html-->
@@ -109,6 +112,11 @@
     const viewInput = document.querySelector('#view-select');
     const liveInput = document.querySelector('#live-input');
     function folderSelected() {
+        document.getElementById('path-divide').innerHTML = '';
+        html1.setValue('');
+        html2.setValue('');
+        js1.setValue('');
+        js2.setValue('');
         socket.emit('request-server-for-pages', projectInput.value);
     }
 
@@ -132,10 +140,12 @@
         }
         console.log('server sent folders', folders, oldFolders, newFolders);
         const foldersSelect = projectInput;
-        foldersSelect.innerHTML = '';
+        foldersSelect.innerHTML = '<option>--select-project--</option>';
         const pagesUl = fileInput;
-        pagesUl.innerHTML = '';
+        pagesUl.innerHTML = '<option value="">--select-file--';
+
         folders.sort();
+
         folders.forEach(folder => {
             const option = document.createElement('option');
             option.innerText = folder;
@@ -145,7 +155,7 @@
     });
     socket.on('server-sent-data-pages', (pages) => {
         const pagesUl = fileInput;
-        pagesUl.innerHTML = '';
+        pagesUl.innerHTML = '<option value="">--select-file--></option>';
         pages.sort();
         pages.forEach( page => {
             const option = document.createElement('option');
@@ -155,7 +165,28 @@
         });
     });
     let htmlLast = '';
+    let htmlLast2 = '';
     let jsLast = '';
+    let jsLast2 = '';
+    let currentState = {
+        html1: {
+            cursor: null,
+            time: null,
+        },
+        html2: {
+            cursor: null,
+            time: null,
+        },
+        js1: {
+            cursor: null,
+            time: null,
+        },
+        js2: {
+            cursor: null,
+            time: null,
+        },
+        username: myUser.username,
+    };
     const html1 = CodeMirror(document.querySelector('#html'), {
         lineNumbers: true,
         mode: "text/html"
@@ -214,8 +245,8 @@
             createMarker(cursor, js1, username)
         }
     });
-    socket.on('server-sent-data-text', ({html, js, file}) => {
-        console.log('i got update', {html, js, file});
+    socket.on('server-sent-data-text', ({html, js, file, updatedState}) => {
+        console.log('i got update', {html, js, file, updatedState});
         if (redirect.slice(redirect.length - 2).join('/') === file) {
             console.log('html', html, 'value', html1.getValue());
             htmlLast = html;
@@ -223,54 +254,100 @@
             const currentHtml = html1.getValue();
             const currentJs = js1.getValue();
             if (currentHtml !== html) {
+                const currentCursor = html1.getCursor();
                 html1.setValue(html);
-                createMarkerOriginal({ch: 0, line: 4}, html1);
+                console.log('current cursor', currentCursor);
+                html1.setCursor(currentCursor);
             }
             if (currentJs !== js) {
-                js1.setValue(js);
-                createMarkerOriginal({ch: 0, line: 4}, js1);
+                const currentCursor = js1.getCursor();
+                js1.setValue(html);
+                js1.setCursor(currentCursor);
+                createMarkerOriginal(currentCursor, js1);
             }
         } else if (file === `${projectInput.value}/${fileInput.value}`.split('.html').join('')) {
+            document.querySelector('#path-divide').innerHTML = `${projectInput.value}/${fileInput.value}`;
             console.log('html2', html, 'value', html1.getValue());
-            htmlLast = html;
-            jsLast = js;
+            htmlLast2 = html;
+            jsLast2 = js;
             const currentHtml2 = html2.getValue();
             const currentJs2 = js2.getValue();
             if (currentHtml2 !== html) {
+                const currentCursor = html2.getCursor();
                 html2.setValue(html);
-                createMarkerOriginal({ch: 0, line: 4}, html2);
+                html2.setCursor(currentCursor);
+                createMarkerOriginal(currentCursor, html2);
             }
             if (currentJs2 !== js) {
-                js2.setValue(js);
-                createMarkerOriginal({ch: 0, line: 4}, js2);
+                const currentCursor = js2.getCursor();
+                js2.setValue(html);
+                js2.setCursor(currentCursor);
+                createMarkerOriginal(currentCursor, js2);
             }
         }
     });
-    socket.on('file-updated', () => {
+    socket.on('file-updated', (file, updatedState) => {
         console.log('server sent data text ', liveCoding);
-        if (liveCoding) {
+        if (false) {
 
         } else {
-            console.log('i should update');
-            socket.emit('request-text-from-file', redirect.slice(redirect.length - 2).join('/'));
+            console.log('i should update', file);
+            socket.emit('request-text-from-file', file, updatedState);
         }
     });
 
     function save() {
+        console.log('save1')
         const html = html1.getValue();
         const js = js1.getValue();
         if (html === htmlLast && js === jsLast) {
             return;
         }
-        console.log('im sending', {html, js}, {htmlLast, jsLast});
+        console.log('im sending1', {html, js}, {htmlLast, jsLast});
         htmlLast = html;
         jsLast = js;
-        console.log('im sending2', {html, js}, {htmlLast, jsLast});
-        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), {
+        console.log('my user', myUser)
+        currentState.html1.time = new Date().toISOString();
+        currentState.html1.cursor = html1.getCursor();
+        currentState.js1.time = new Date().toISOString();
+        currentState.js1.cursor = js1.getCursor();
+        const payload = {
             html,
             js,
-            username: myUser.username
-        }, liveCoding);
+            username: myUser.username,
+            updatedState: currentState,
+        };
+        console.log('im sending1', payload, );
+        socket.emit('request-to-save-text', redirect.slice(-2).join('/'), payload, liveCoding);
+
+    }
+
+    function save2() {
+        console.log('save2');
+        const html = html2.getValue();
+        const js = js2.getValue();
+        if (html === htmlLast2 && js === jsLast2) {
+            return;
+        }
+        htmlLast2 = html;
+        jsLast2 = js;
+        const path = projectInput.value;
+        const file = fileInput.value;
+        if (!file) return;
+        const filePath = `${path}/${file}`.split('.html').join('');
+        currentState.html2.time = new Date().toISOString();
+        currentState.html2.cursor = html2.getCursor();
+        currentState.js2.time = new Date().toISOString();
+        currentState.js2.cursor = js2.getCursor();
+        const payload = {
+            html,
+            js,
+            username: myUser.username,
+            filePath,
+            currentState,
+        };
+        console.log('im sending2', payload, {htmlLast2, jsLast2});
+        socket.emit('request-to-save-text', filePath, payload, liveCoding);
 
     }
 
@@ -282,14 +359,24 @@
         socket.emit('request-server-for-redirect-all', `editor/${redirect.slice(redirect.length - 2).join('/')}`);
     }
 
+    html1.cmName = 'html1';
+    html2.cmName = 'html2';
+    js1.cmName = 'js1';
+    js2.cmName = 'js2';
     html1.on('change', changeDetected);
+    html2.on('change', changeDetected);
     js1.on('change', changeDetected);
     html1.on('mousedown', showCursorHTML);
     js1.on('mousedown', showCursorJS);
 
-    function changeDetected(event) {
-        console.log('detected', html1.getCursor());
-        save();
+    function changeDetected(cm) {
+        console.log('detected', cm.cmName);
+        console.log(this, cm);
+        if (cm.cmName.indexOf('1') > 0) {
+            save();
+        } else {
+            save2();
+        }
     }
 
     function showCursorHTML() {
