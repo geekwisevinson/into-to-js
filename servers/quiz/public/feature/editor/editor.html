@@ -72,8 +72,6 @@
         <div id="html">
             HTML
         </div>
-        <!--html-->
-        <!--javascript-->
         <div id="javascript">
             JavaScript
         </div>
@@ -81,8 +79,6 @@
             <div id="path-divide"></div>
             HTML
         </div>
-        <!--html-->
-        <!--javascript-->
         <div id="javascript2">
             JavaScript
         </div>
@@ -111,10 +107,13 @@
     const fileInput = document.querySelector('#files-select');
     const viewInput = document.querySelector('#view-select');
     const liveInput = document.querySelector('#live-input');
+
     function folderSelected() {
         document.getElementById('path-divide').innerHTML = '';
+        fileInput.value = '';
         html2.setValue('');
         js2.setValue('');
+        selectedProject = localStorage.setItem('selectedProject', projectInput.value);
         socket.emit('request-server-for-pages', projectInput.value);
     }
 
@@ -122,7 +121,7 @@
         const path = projectInput.value;
         const file = fileInput.value;
         selectedFile = localStorage.setItem('selectedFile', fileInput.value);
-        socket.emit('request-text-from-file', `${path}/${file}`.split('.html').join('') );
+        socket.emit('request-text-from-file', `${path}/${file}`.split('.html').join(''));
     }
 
     socket.emit('request-server-for-folders', '');
@@ -130,12 +129,14 @@
         socket.emit('request-server-for-folders', '');
     }, 5000);
     socket.on('server-sent-data-folders', (folders) => {
+        console.log('server sent folders', folders);
         const oldFolders = currentPages.join('');
         const newFolders = folders.join('');
         currentPages = folders;
         if (oldFolders === newFolders) {
             return
         }
+        console.log('new ones', selectedProject)
         const foldersSelect = projectInput;
         foldersSelect.innerHTML = '<option>--select-project--</option>';
         const pagesUl = fileInput;
@@ -149,6 +150,7 @@
         });
         if (folders.includes(selectedProject)) {
             projectInput.value = selectedProject;
+            console.log('selectedProject', selectedProject)
             socket.emit('request-server-for-pages', selectedProject);
         }
 
@@ -157,7 +159,7 @@
         const pagesUl = fileInput;
         pagesUl.innerHTML = '<option value="">--select-file--></option>';
         pages.sort();
-        pages.forEach( page => {
+        pages.forEach(page => {
             const option = document.createElement('option');
             option.innerText = page;
             option.value = page;
@@ -165,8 +167,8 @@
         });
         if (pages.includes(selectedFile)) {
             fileInput.value = selectedFile;
-            console.log('requesting', `${selectedProject}/${selectedFile}` );
-            socket.emit('request-text-from-file', `${selectedProject}/${selectedFile}`.replace('.html', '') );
+            console.log('requesting', `${selectedProject}/${selectedFile}`);
+            socket.emit('request-text-from-file', `${selectedProject}/${selectedFile}`.replace('.html', ''));
         }
 
     });
@@ -227,11 +229,11 @@
         const html = document.getElementById('html');
         const js = document.getElementById('javascript');
         viewInput.value === 'html' ? html.classList.remove('closed') : html.classList.add('closed');
-        viewInput.value === 'js'  ? js.classList.remove('closed') : js.classList.add('closed');
+        viewInput.value === 'js' ? js.classList.remove('closed') : js.classList.add('closed');
         viewInput.value === 'both' ? html.classList.remove('closed') || js.classList.remove('closed') : html.classList.remove('close') || js.classList.remove('close');
         const html2 = document.getElementById('html2');
         const js2 = document.getElementById('javascript2');
-        viewInput.value === 'html'? html2.classList.remove('closed') : html2.classList.add('closed');
+        viewInput.value === 'html' ? html2.classList.remove('closed') : html2.classList.add('closed');
         viewInput.value === 'js' ? js2.classList.remove('closed') : js2.classList.add('closed');
         viewInput.value === 'both' ? html2.classList.remove('closed') || js2.classList.remove('closed') : html2.classList.remove('close') || js2.classList.remove('close');
     }
@@ -257,6 +259,7 @@
         console.log('does it have a state?', payload);
 
         if (redirect.slice(redirect.length - 2).join('/') === file) {
+            console.log('this should go in 1')
             if (payload && payload.changed) {
                 console.log('it does');
                 console.log('do i have a time for this file');
@@ -269,7 +272,7 @@
                         console.log('it is not newer');
                         return;
                     }
-                    console.log('myTime', currentState[payload.changed.type + '1'].time );
+                    console.log('myTime', currentState[payload.changed.type + '1'].time);
                     console.log('newTime', payload.changed.time);
                 } else {
                     console.log('i do not!');
@@ -294,6 +297,7 @@
                 createMarkerOriginal(currentCursor, js1);
             }
         } else if (file === `${projectInput.value}/${fileInput.value}`.split('.html').join('')) {
+            console.log('this should go in 2')
             document.querySelector('#path-divide').innerHTML = `${projectInput.value}/${fileInput.value}`;
             console.log('html2', html, 'value', html1.getValue());
             if (payload && payload.changed) {
@@ -308,7 +312,7 @@
                         console.log('it is not newer');
                         return;
                     }
-                    console.log('myTime', currentState[payload.changed.type + '2'].time );
+                    console.log('myTime', currentState[payload.changed.type + '2'].time);
                     console.log('newTime', payload.changed.time);
                 } else {
                     console.log('i do not!');
@@ -369,8 +373,10 @@
             updatedState: currentState,
             changed
         };
-        currentState[changed.type === 'html' ? 'html1': 'js1'].time = changed.time;
-        console.log('im sending1', payload, );
+        currentState[changed.type === 'html' ? 'html1' : 'js1'].time = changed.time;
+        console.log('im sending1', payload,);
+        console.log('redirect[redirect.length -1]',redirect[redirect.length -1]);
+        console.log('myUser.username', myUser.username)
         socket.emit('request-to-save-text', redirect.slice(-2).join('/'), payload, liveCoding);
 
     }
@@ -405,8 +411,8 @@
             updatedState: currentState,
             changed
         };
-        currentState[changed.type === 'html' ? 'html2': 'js2'].time = changed.time;
-        console.log('im sending2', payload, );
+        currentState[changed.type === 'html' ? 'html2' : 'js2'].time = changed.time;
+        console.log('im sending2', payload,);
         socket.emit('request-to-save-text', filePath, payload, liveCoding);
 
     }
@@ -423,9 +429,10 @@
     html2.cmName = 'html2';
     js1.cmName = 'js1';
     js2.cmName = 'js2';
-    html1.on('change', changeDetected);
-    html2.on('change', changeDetected);
-    js1.on('change', changeDetected);
+    html1.on('keyup', changeDetected);
+    html2.on('keyup', changeDetected);
+    js1.on('keyup', changeDetected);
+    js2.on('keyup', changeDetected);
     html1.on('mousedown', showCursorHTML);
     js1.on('mousedown', showCursorJS);
 
@@ -493,6 +500,7 @@
 // Second argument widget: Generated DOM node
         const marker = mirror.setBookmark(cursorPos, {widget: cursorElement});
     }
+
     projectInput.value = selectedProject;
     fileInput.value = selectedFile;
 </script>

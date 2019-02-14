@@ -43,12 +43,18 @@ loggedInDiv.style.fontSize = '1.6em';
 
 // Check browser support
 if (typeof(Storage) !== "undefined") {
+    console.log('you have storage')
+    selectedProject = localStorage.getItem('selectedProject');
+    selectedFile = localStorage.getItem('selectedFile');
+    console.log('project', selectedProject);
+    console.log('file', selectedFile)
 } else {
     document.getElementById("error").innerHTML = "Sorry, your browser does not support Web Storage...";
 }
 socket.on('connect', () => {
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
+    console.log("token", token)
     if (username && token) {
         socket.emit('client-would-like-to-login', {username, password: token });
     } else {
