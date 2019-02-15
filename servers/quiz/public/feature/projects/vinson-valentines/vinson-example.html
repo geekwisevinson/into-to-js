@@ -3,48 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <title>Quizzer</title>
+
+    <style>
+        .online {
+            color: darkred;
+        }
+        .offline {
+            color: grey;
+        }
+        .selected-user {
+            font-size: 2em;
+            font-weight: bolder;
+            color: lightgreen;
+        }
+
+        .main {
+            display: flex;
+        }
+        .main > * {
+            flex: 1;
+            border: 1px solid grey;
+        }
+        .visible {
+
+        }
+        .invisible {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <!--HTML-->
 <input id="message" type="text" placeholder="message">
 <button onclick="sendMessage()">Send message</button>
 
-<ul>
+<div class="main">
+    <ul id="users">
 
-</ul>
+    </ul>
+
+    <ul id="messages">
+
+    </ul>
+</div>
+
 
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../../basic/basic.js"></script>
 <script id="inline-js">
+    // variable to hold user to send message to
 let targetUser = null;
+// function that is called when the button send message is clicked
 function sendMessage() {
+    // if No user is selected stop the function
     if (!targetUser) return;
+    // create a object that contains everything we want to send to the server
     const payload = {
         username: targetUser,
         message: document.getElementById('message').value,
+        sender: myUser.username,
     };
+    console.log('payload', payload);
+    // send the message through the socket that is connected
     socket.emit('send-message', payload);
 }
-socket.on('server-sent-message', function (message){
+// listen for the server to send "server-sent-message" and define a function to  run
+socket.on('server-sent-message', function (message, sender){
    console.log('server sent a message', message);
+   // get ul for messages
+   const messageUl = document.querySelector('#messages');
+   // create li to place in ul
+   const li = document.createElement('li');
+   // write text to li
+   li.innerText = `${sender} -- ${message}`;
+   // place the li in the message ul
+   messageUl.appendChild(li);
+   showSelectedMessage()
 });
+// listens for 'users' and define a function to list all users
 socket.on('users', function (users) {
     console.log('users', users);
     const ul = document.getElementsByTagName('ul')[0];
+    // ul gets reset each time new users are sent
     ul.innerHTML = '';
+    // for each through every user
     users.forEach ( user => {
         const li = document.createElement('li');
         ul.appendChild(li);
-        li.innerHTML = JSON.stringify(user);
+        // Use JSON to stringify user
+        const userName = Object.keys(user)[0];
+        li.innerHTML = Object.keys(user)[0];
+        li.classList.add( user[userName] ? 'online' : 'offline');
         li.user = user;
+
+        if (targetUser && Object.keys(li.user)[0] === targetUser) {
+            li.classList.add('selected-user');
+        }
         li.addEventListener('click', function(){
            console.log(this.user);
+           document.querySelectorAll('#users li').forEach( l => {
+               l.classList.remove('selected-user');
+           });
+           this.classList.add('selected-user')
+           // the object has 1 key which is the username, so we grab the first key
+            // and place it in the target user variable
            targetUser = Object.keys(this.user)[0];
            console.log('targetUser', targetUser);
-
+            showSelectedMessage()
         })
     });
 })
+
+    function showSelectedMessage() {
+        document.querySelectorAll('#messages li').forEach( ml => {
+            if (!ml.textContent.includes(targetUser)) {
+                ml.classList.add('invisible');
+                ml.classList.remove('visible');
+            } else {
+                ml.classList.remove('invisible');
+                ml.classList.add('visible');
+            }
+        });
+    }
 </script>
 </html>
