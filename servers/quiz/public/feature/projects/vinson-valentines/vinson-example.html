@@ -1,10 +1,23 @@
 <!doctype html>
-<html lang="en"><head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <title>Quizzer</title>
 </head>
-<body><script>
-  
-</body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js"><script>
-  
-</script></html>
+<body>
+<!--HTML-->
+<input type="text" placeholder="user">
+<input type="text" placeholder="message">
+<button onclick="sendMessage()">Send message</button>
+
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
+<script id="inline-js">
+
+socket.on('users', function (users) {
+    console.log('users', users);
+})
+</script>
+</html>

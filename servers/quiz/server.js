@@ -123,6 +123,7 @@ io.on ( 'connection', function (socket) {
         io.to(socket.id).emit('server-sent-data-text', {html, js, file: path, payload});
     });
     socket.on('request-to-save-text', function(path, {html, js, username, updatedState, changed}, liveCoding){
+        return;
         console.log('attempt', saves, username, {html, js, username, updatedState});
         const payload = arguments[1];
         let replacedHtml = html.replace('&lt;','<');
