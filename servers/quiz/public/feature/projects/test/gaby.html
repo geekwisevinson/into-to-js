@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+</head>
+<body></body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js">let changed = false;
+const ul = document.getElementsByTagName('ul')[0];
+lastData = {};
+socket.on('users',function(users) {
+  changed = false;
+  console.log(users);
+  users.forEach( user => {
+    const username = Object.keys(user)[0];
+    const onlnine = user[username] ? '--online' : '--offline';
+    console.log('username', username, 'online', online);
+    if (!lastData[username] || lastData[username] !== online) {
+      console.log('true');
+      changed = true;
+      lastData[username] = online;
+    }
+  });
+  if (changed === false) return;
+  ul.innerHTML = '';
+  
+  </script></html>

@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+</head>
+<body></body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js">
+socket.on('server-sent-message', function(message) {
+  console.log('message', message);
+});
+
+
+socket.emit('send-message', {username: 'test', message: 'Hello World!'});</script></html>

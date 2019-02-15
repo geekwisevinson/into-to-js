@@ -34,6 +34,8 @@
     <div id="logged-in"></div>
     <div id="error"></div>
     <h1>Projects</h1>
+    <input type="text" id="newFile" placeholder="file name">
+    <button onclick="addProject()">+</button>
     <div>
         <ul id="folders-ul">
 
@@ -64,6 +66,12 @@
     socket.emit('request-server-for-folders', '');
     setInterval(() => {
         socket.emit('request-server-for-folders', '');
-    }, 5000)
+    }, 5000);
+    function addProject() {
+        const file = `${myUser.username}-${document.getElementById('newFile').value}`;
+        document.getElementById('newFile').value = '';
+        console.log('add new project named', file);
+        socket.emit('request-server-add-project', file);
+    }
 </script>
 </html>

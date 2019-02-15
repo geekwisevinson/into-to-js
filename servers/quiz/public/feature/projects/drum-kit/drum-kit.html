@@ -4,7 +4,6 @@
     <title>Quizzer</title>
 </head>
 <body>
-
     <div class="keys">
         <div class="key" data-key="65">
             <kbd>A</kbd>
@@ -53,41 +52,4 @@
         }
     </style>
     
-</body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js">
-        const keys = document.getElementsByClassName('key');
-        Array.from( keys ).forEach( ( key => {
-            key.addEventListener( 'transitionend', removeTransition);
-            console.dir(key);
-        }));
-
-        function removeTransition( e) {
-            console.log('end', e);
-            if (e.propertyName === 'transform') {
-                e.target.classList.remove('playing')
-            }
-        }
-        window.addEventListener('keydown', function (e) {
-            const audio = findAttributeValue('audio', 'data-key', e.keyCode +='' );
-            const key = findAttributeValue('div', 'data-key', e.keyCode + '' );
-            if (!audio) {
-                return;
-            }
-            key.classList.add('playing');
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().then( f => {
-                })
-            }
-        });
-
-        function findAttributeValue( type, attr, value) {
-            const elements = document.getElementsByTagName(type);
-            let found;
-            Array.prototype.forEach.call(elements, (element) => {
-                if (element.getAttribute('data-key') === value) {
-                    found = element;
-                }
-            });
-            return found;
-        }
-    </script></html>
+</body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js"></script></html>

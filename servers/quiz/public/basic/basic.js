@@ -1,4 +1,7 @@
 const socket = io();
+let myUser = {};
+let selectedProject = localStorage.getItem('selectedProject');
+let selectedFile = localStorage.getItem('selectedFile');
 const colorSchemes = [
     ['#f4cc70', '#20948b', '#de7a22', '#6ab187'],
     ['#34675c', '#4CB5F5', '#b3c100', '#b7b8b6'],
@@ -25,6 +28,7 @@ function createLogoutButton() {
         localStorage.setItem('token', '');
         const username = localStorage.getItem('username');
         const token = localStorage.getItem('token');
+
         this.remove();
         socket.emit('request-server-for-redirect', 'home');
     });
@@ -39,12 +43,18 @@ loggedInDiv.style.fontSize = '1.6em';
 
 // Check browser support
 if (typeof(Storage) !== "undefined") {
+    console.log('you have storage')
+    selectedProject = localStorage.getItem('selectedProject');
+    selectedFile = localStorage.getItem('selectedFile');
+    console.log('project', selectedProject);
+    console.log('file', selectedFile)
 } else {
     document.getElementById("error").innerHTML = "Sorry, your browser does not support Web Storage...";
 }
 socket.on('connect', () => {
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
+    console.log("token", token)
     if (username && token) {
         socket.emit('client-would-like-to-login', {username, password: token });
     } else {
@@ -71,6 +81,8 @@ socket.on('server-sent-login', ({username, token}) => {
     document.querySelector('#logged-in').innerHTML = username;
     document.querySelector('#token').innerHTML = token;
     createLogoutButton();
+    myUser.username = username;
+    myUser.token = token;
     socket.emit('client-location', urlArray.join('/'));
 });
 

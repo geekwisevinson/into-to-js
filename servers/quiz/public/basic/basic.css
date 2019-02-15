@@ -83,3 +83,7 @@ a:active {
     text-decoration: none;
     color: var(--color-first);
 }
+
+input {
+    font-size: 1.1em;
+}
