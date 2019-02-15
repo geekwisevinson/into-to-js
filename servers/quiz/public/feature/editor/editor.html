@@ -6,42 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <style>
-        .holder {
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            width: 100%;
-        }
-
-        holder > * {
-            border: 1px solid black;
-        }
-
-        .main-holder {
-            display: flex;
-        }
-
-
-        .closed {
-            width: 1px;
-            display: none;
-        }
-
-        .CodeMirror-hints {
-            background-color: red;
-        }
-
-        .CodeMirror-hint {
-            background-color: green;
-        }
-
-        .CodeMirror-hint-active {
-            background-color: blue;
-            color: yellow;
-        }
-    </style>
+    <link rel="stylesheet" href="./css/editor.css">
     <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
     <link rel="stylesheet" href="http://codemirror.net/addon/hint/show-hint.css">
 </head>
@@ -64,7 +29,6 @@
         <select id="files-select" onchange="fileSelected()">
             <option value="">--select-file--</option>
         </select>
-
     </fieldset>
 </div>
 <div class="">
@@ -153,7 +117,6 @@
             console.log('selectedProject', selectedProject)
             socket.emit('request-server-for-pages', selectedProject);
         }
-
     });
     socket.on('server-sent-data-pages', (pages) => {
         const pagesUl = fileInput;
