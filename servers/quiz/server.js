@@ -185,9 +185,10 @@ io.on ( 'connection', function (socket) {
         }
     });
 
-    socket.on('send-message', function ({username, message}) {
+    socket.on('send-message', function ({username, message, sender}) {
        if (username && users[username]) {
-           io.to(users[username].socketID).emit('server-sent-message', message);
+           console.log('sender', sender);
+           io.to(users[username].socketID).emit('server-sent-message', message, sender);
        }
     });
     socket.on('disconnect', function() {
