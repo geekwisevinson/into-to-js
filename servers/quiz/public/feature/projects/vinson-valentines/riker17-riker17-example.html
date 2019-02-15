@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Quizzer</title>
+    <style>
+      .selected-user {
+        font-size: 2em;
+        font-weight: bold;
+      }
+    </style>
 </head>
 <body>
 
@@ -16,19 +22,35 @@
     <script id="inline-js">
 
     let targetUser = null;
-    socket.on ('server-sent-message', function (message){
-      console.log('server sent a message', message);
-    })
-    socket.on('users', function(users))
-      const inputs = document.getElementsByTagName('input');
-      function sendMessage() {
+    function sendMessage() {
+        if (!targetUser) return;
         const payload = {
-            username: inputs[0].value
-            message: document.getElementsById('message').value,
+            username: targetUser,
+            message: document.getElementById('message').value,
         };
-
         socket.emit('send-message', payload);
-      }
+    }
+    socket.on('server-sent-message', function (message, sender){
+       console.log('server sent a message', message);
+    });
+    socket.on('users', function (users) {
+        console.log('users', users);
+        const ul = document.getElementsByTagName('ul')[0];
+        ul.innerHTML = '';
+        users.forEach ( user => {
+            const li = document.createElement('li');
+            ul.appendChild(li);
+            li.innerHTML = JSON.stringify(user);
+            li.user = user;
+            li.addEventListener('click', function(){
+               console.log(this.user);
+               this.classList.add('selected')
+               targetUser = Object.keys(this.user)[0];
+               console.log('targetUser', targetUser);
+
+            })
+        });
+    })
 
     </script>
 </html>
