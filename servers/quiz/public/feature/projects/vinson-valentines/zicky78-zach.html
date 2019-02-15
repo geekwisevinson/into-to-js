@@ -6,7 +6,7 @@
 
     <style>
         .online {
-            color: darkred;
+            color: orangered;
         }
 
         .offline {
@@ -16,17 +16,58 @@
         .selected-user {
             font-size: 2em;
             font-weight: bolder;
-            color: lightgreen;
+            color: purple;
         }
 
         .main {
+            width: 230px;
+            height: 429px;
+            border: 5px solid purple;
+            display: -webkit-flex;
             display: flex;
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+            overflow: auto;
+            float: right;
         }
 
-            .main > * {
-                flex: 1;
-                border: 1px solid grey;
-            }
+        .main2 {
+            width: 755px;
+            height: 400px;
+            border: 5px solid purple;
+            border-right: hidden;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+            overflow: auto;
+            float: left;
+        }
+
+        .wrapper {
+            width: 1000px;
+        }
+
+        .input {
+            width: 650px;
+            height: 20px;
+            border: 5px solid purple;
+            border-top: hidden;
+            padding: 2px;
+            float: left;
+        }
+
+        .button {
+            width: 92px;
+            height: 20px;
+            border: 5px solid purple;
+            border-top: hidden;
+            border-right: hidden;
+            border-left: hidden;
+            padding: 2px;
+            float: left;
+            background-color: mediumpurple;
+        }
 
         .visible {
         }
@@ -38,16 +79,16 @@
 </head>
 <body>
     <!--HTML-->
-    <input id="message" type="text" placeholder="message">
-    <button onclick="sendMessage()">Send message</button>
-
-    <div class="main">
-        <ul id="users"></ul>
-
-        <ul id="messages"></ul>
-    </div>
-
-
+    <div class="wrapper">
+        <div class="main">
+            <ul id="users"></ul>
+        </div>
+        <div class="main2">
+            <ul id="messages"></ul>
+        </div>
+            <input class="input" id="message" type="text" placeholder="message">
+            <div class="button" onclick="sendMessage()">SEND</div>
+    </div>  
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../../basic/basic.js"></script>
@@ -65,8 +106,19 @@
             sender: myUser.username,
         };
         console.log('payload', payload);
+
+        //   *** Added ***
+        //Prevents sending empty messages
+        if (document.getElementById('message').value === '') return;
+
         // send the message through the socket that is connected
         socket.emit('send-message', payload);
+
+        //   *** Added ***
+        //Clears the value of the input field
+        document.getElementById('message').value = null;
+
+
     }
     // listen for the server to send "server-sent-message" and define a function to  run
     socket.on('server-sent-message', function (message, sender) {
@@ -125,6 +177,16 @@
                 ml.classList.add('visible');
             }
         });
+
+
+        //   *** Added ***
+        //Listens for the enter key to be pressed to send the message
+        document.addEventListener("keydown", (e) => {
+            if (e.code === 'Enter') {
+                sendMessage();
+            }
+        });
+        
     }
 </script>
 </html>
