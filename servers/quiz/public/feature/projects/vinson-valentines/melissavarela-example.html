@@ -1,10 +1,29 @@
-<!doctype html>
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <title>Quizzer</title>
 </head>
-<body><script> 
+<body>
 
+<input type="text" placeholder="user">
+    <input typle="text" placeholser="message">
+    <button onclick="sendMessage()">Send message</button>
+</body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../basic/basic.js"></script>
+    <link rel="stylesheet" href="../../../basic/basic.css">
+    <script id="inline-js">
+        const inputs =document.getElementsByTagName('input');
+        function sendMessage() {
+            const payload = {
+                username: inputs[0].value,
+                message: inputs[1].value,
 
+            }
+            socket.emit('send-message', payload)
 
-</script></body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js"></script></html>
+        }
+    
+    </script>
+</html>
