@@ -167,7 +167,7 @@ io.on ( 'connection', function (socket) {
         io.emit('server-show-cursor', type, cursor, username);
     });
     socket.on('client-location', function(location) {
-        if (socket.username) {
+        if (socket.username && location) {
             users[socket.username].location = location;
         }
     });
