@@ -1,30 +1,57 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Quizzer</title>
 </head>
 <body>
+    <!--HTML-->
+    <input id="message" type="text" placeholder="message">
+    <button onclick="sendMessage()">Send message</button>
 
-    <input type="text" placeholder="user" />
-    <input type="text" placeholder="message" />
-    <button onclick="sendMessage()">Send Message</button>
+    <ul></ul>
+    <ul id="messages"></ul>
 
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../../basic/basic.js"></script>
-<link rel="stylesheet" href="../../../basic/basic.css">
 <script id="inline-js">
-    const inputs = document.getElementsByTagName('input');
+    let targetUser = null;
     function sendMessage() {
+        if (!targetUser) return;
         const payload = {
-            username: inputs[0].value,
-            message: inputs[1].value,
-        }
+            username: targetUser,
+            message: document.getElementById('message').value,
+            sender: myUser.username,
+        };
         socket.emit('send-message', payload);
     }
+    socket.on('server-sent-message', function (message, sender) {
+        console.log('server sent a message', message);
+        const messageUl = document.querySelector('#messages');
+        const li = document.createElement('li');
+        li.innerText = `${sender} -- ${message}`;
+        messageUl.appendChild(li);
+    });
 
 
 
+    socket.on('users', function (users) {
+        console.log('users', users);
+        const ul = document.getElementsByTagName('ul')[0];
+        ul.innerHTML = '';
+        users.forEach(user => {
+            const li = document.createElement('li');
+            ul.appendChild(li);
+            li.innerHTML = JSON.stringify(user);
+            li.user = user;
+            li.addEventListener('click', function () {
+                console.log(this.user);
+                targetUser = Object.keys(this.user)[0];
+                console.log('targetUser', targetUser);
+
+            })
+        });
+    })
 </script>
 </html>
