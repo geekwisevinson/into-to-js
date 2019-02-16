@@ -47,15 +47,15 @@ io.on ( 'connection', function (socket) {
             users[user] = '';
         }
     });
-    sendUsers({io, users});
+    sendUsers({io, users, rootDir});
     onRequestToSignUp({io, socket, rootDir});
     onRequestToLogIn({io, socket, rootDir, users, tokens});
     onRequestServerForPages({io, socket, rootDir});
     onRequestFolders({io, socket, rootDir});
     onRequestServerAddProject({io, socket, rootDir});
-    onRequestTextFromFile({io, socket});
-    onRequestToSaveText({io, socket});
-    onSendMessage({io, socket, users});
+    onRequestTextFromFile({io, socket, rootDir});
+    onRequestToSaveText({io, socket, rootDir});
+    onSendMessage({io, socket, rootDir, users});
     socket.on( 'request-server-for-redirect', function (page) {
         io.to(socket.id).emit('client-should-redirect', page);
     });

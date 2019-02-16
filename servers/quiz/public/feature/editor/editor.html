@@ -65,13 +65,12 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../../basic/basic.js"></script>
 <link rel="stylesheet" href="../../../basic/basic.css">
+<script src="../../../../feature/editor/js/globals.js"></script>
+<script src="../../../../feature/editor/js/on/connect.js"></script>
 <script>
-    let currentPages = [];
-    const projectInput = document.querySelector('#folders-select');
-    const fileInput = document.querySelector('#files-select');
-    const viewInput = document.querySelector('#view-select');
-    const liveInput = document.querySelector('#live-input');
-
+    const filePath = redirect.slice(-2).join('/');
+    socket.emit('request-text-from-file', filePath);
+    console.log('filePath', filePath);
     function folderSelected() {
         document.getElementById('path-divide').innerHTML = '';
         fileInput.value = '';
@@ -93,7 +92,6 @@
         socket.emit('request-server-for-folders', '');
     }, 5000);
     socket.on('server-sent-data-folders', (folders) => {
-        console.log('server sent folders', folders);
         const oldFolders = currentPages.join('');
         const newFolders = folders.join('');
         currentPages = folders;
@@ -135,58 +133,9 @@
         }
 
     });
-    let htmlLast = '';
-    let htmlLast2 = '';
-    let jsLast = '';
-    let jsLast2 = '';
-    let currentState = {
-        html1: {
-            cursor: null,
-            time: null,
-        },
-        html2: {
-            cursor: null,
-            time: null,
-        },
-        js1: {
-            cursor: null,
-            time: null,
-        },
-        js2: {
-            cursor: null,
-            time: null,
-        },
-        username: myUser.username,
-    };
-    const html1 = CodeMirror(document.querySelector('#html'), {
-        lineNumbers: true,
-        mode: "text/html"
-    });
-    const js1 = CodeMirror(document.querySelector('#javascript'), {
-        lineNumbers: true,
-        extraKeys: {
-            "Ctrl-Space": "autocomplete"
-        },
-        mode: {
-            name: "javascript",
-            globalVars: true
-        }
-    });
 
-    const html2 = CodeMirror(document.querySelector('#html2'), {
-        lineNumbers: true,
-        mode: "text/html"
-    });
-    const js2 = CodeMirror(document.querySelector('#javascript2'), {
-        lineNumbers: true,
-        extraKeys: {
-            "Ctrl-Space": "autocomplete"
-        },
-        mode: {
-            name: "javascript",
-            globalVars: true
-        }
-    });
+
+
 
     function viewChange() {
         const html = document.getElementById('html');
@@ -204,9 +153,7 @@
 <script>
     const redirect = window.location.href.split('/');
     let liveCoding = viewInput.checked;
-    socket.on('connect', () => {
-        socket.emit('request-text-from-file', redirect.slice(redirect.length - 2).join('/'));
-    });
+
     socket.on('server-show-cursor', (type, cursor, username) => {
         console.log('type,cursor,username', type, cursor, username);
         if (type === 'html') {
@@ -217,6 +164,7 @@
         }
     });
     socket.on('server-sent-data-text', ({html, js, file, payload}) => {
+        console.log('data-text', {html, js, file, payload});
         console.log('server sent data text', file);
         console.log('i got update', {html, js, file, payload});
         console.log('does it have a state?', payload);
@@ -388,16 +336,7 @@
         socket.emit('request-server-for-redirect-all', `editor/${redirect.slice(redirect.length - 2).join('/')}`);
     }
 
-    html1.cmName = 'html1';
-    html2.cmName = 'html2';
-    js1.cmName = 'js1';
-    js2.cmName = 'js2';
-    html1.on('keyup', changeDetected);
-    html2.on('keyup', changeDetected);
-    js1.on('keyup', changeDetected);
-    js2.on('keyup', changeDetected);
-    html1.on('mousedown', showCursorHTML);
-    js1.on('mousedown', showCursorJS);
+
 
     function changeDetected(cm) {
         if (cm.cmName.indexOf('1') > 0) {

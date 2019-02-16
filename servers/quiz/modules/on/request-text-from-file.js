@@ -1,15 +1,14 @@
 const fs = require ( 'fs' );
-module.exports = function ({io, socket}) {
+module.exports = function ({io, socket, rootDir}) {
     socket.on('request-text-from-file', function(path, payload){
         console.log('request for file', path );
-        const built = __dirname + '/public/feature/projects/' + `${path}.html`;
+        const built = rootDir + '/public/feature/projects/' + `${path}.html`;
         debugger;
         if (!fs.existsSync(built)) {
             console.log(built, 'does not exist');
             return;
         }
         const content = fs.readFileSync(built, 'utf8');
-        const dom = new JSDOM(content);
         let js = '';
         const links = dom.window.document.getElementsByTagName('script');
         Array.from(links).forEach( link => {
