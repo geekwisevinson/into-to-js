@@ -1,5 +1,6 @@
 const socket = io();
 let myUser = {};
+const redirect = location.href.split('/');
 let selectedProject = localStorage.getItem('selectedProject');
 let selectedFile = localStorage.getItem('selectedFile');
 const colorSchemes = [
@@ -89,3 +90,5 @@ socket.on('server-sent-login', ({username, token}) => {
 socket.on('users', (users) => {
 
 });
+
+console.log('basic  loaded');
