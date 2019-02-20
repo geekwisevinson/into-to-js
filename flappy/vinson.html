@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const spritesImg = document.createElement('img');
+        const swipeAudio = document.createElement('audio');
+        swipeAudio.src = './swipe.mp3';
+        const goodAudio = document.createElement('audio');
+        goodAudio.src = './good.mp3';
+        const badAudio = document.createElement('audio');
+        badAudio.src = './splat.mp3';
+
+        spritesImg.src = './sprite.png';
+        canvas.style.border = '1px solid black';
+        canvas.setAttribute('width', '360');
+        canvas.setAttribute('height', '640');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.appendChild(spritesImg);
+            document.body.appendChild(canvas);
+        });
+
+
+    </script>
+    <script src="vinson-background.js"></script>
+    <script src="vinson-player.js"></script>
+    <script src="vinson-pipe.js"></script>
+    <script src="vinson-game.js"></script>
+</head>
+<body>
+
+</body>
+</html>
