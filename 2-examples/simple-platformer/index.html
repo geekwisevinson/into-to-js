@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<canvas id='canvas' style="border: 1px solid black;"></canvas>
+<audio src="./swipe.mp3"></audio>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const width = 500;
+    const height = 200;
+    const player = {
+        x: width / 2,
+        y : height -5,
+        width: 5,
+        height: 5,
+    };
+    canvas.width = width;
+    canvas.height = height;
+    ctx.fillStyle = "red";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+</script>
+
+</body>
+</html>

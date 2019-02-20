@@ -49,7 +49,6 @@
 <script>
 
     socket.on('server-sent-data-folders', (folders) => {
-        console.log('server sent folders', folders);
         const foldersUl = document.querySelector('#folders-ul');
         foldersUl.innerHTML = '';
         folders.forEach( folder => {
