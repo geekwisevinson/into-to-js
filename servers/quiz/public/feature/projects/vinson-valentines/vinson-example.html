@@ -52,6 +52,21 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="../../../basic/basic.js"></script>
 <script id="inline-js">
+
+    function log() {
+        Array.from(arguments).forEach( item => {
+            console.log(item);
+        })
+    }
+
+    function HireLevel(x) {
+        return function (y) {
+            const temp = x * y;
+            return function(z) {
+                return temp * z;
+            }
+        }
+    }
     // variable to hold user to send message to
 let targetUser = null;
 // function that is called when the button send message is clicked
@@ -83,7 +98,6 @@ socket.on('server-sent-message', function (message, sender){
 });
 // listens for 'users' and define a function to list all users
 socket.on('users', function (users) {
-    console.log('users', users);
     const ul = document.getElementsByTagName('ul')[0];
     // ul gets reset each time new users are sent
     ul.innerHTML = '';
