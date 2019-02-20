@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<header>
+    <title>Game</title>
+    <style>
+        body {
+            background: black;
+        }
+
+        #game-canvas {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 32px;
+            box-shadow: 0px 0px 32px rgba(255, 255, 255, 0.5);
+        }
+
+        img {
+            display: none;
+        }
+    </style>
+    <!-- Load the image here in DOM so the rest of the code is not executed until this is loaded -->
+    <img src="sprite.png" id="sprites">
+</header>
+
+<body>
+<canvas width="360" height="640" id="game-canvas"></canvas>
+<script src="player.js"></script>
+<script src="pipe.js"></script>
+<script src="background.js"></script>
+<script src="game.js"></script>
+</body>
+
+</html>
