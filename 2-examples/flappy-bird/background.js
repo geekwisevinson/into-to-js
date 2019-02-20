@@ -13,5 +13,6 @@ Background.prototype.update = function() {
 };
 
 Background.prototype.draw = function() {
-    context.drawImage(sprite, 0, 0, 360, 640, this.x, 0, 360, 640)
+    context.drawImage(sprite, 0, 0, 360, 640, this.x, 0, 360, 640);
+
 };
