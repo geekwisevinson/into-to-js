@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script> 
+    const canvas = document.createElement('canvas');
+       const context = canvas.getContext('2d');
+       const spritesImg = document.createElement('img');
+       const swipeAudio = document.createElement('audio');
+       swipeAudio.src = './swipe.mp3';
+
+       spritesImg.src = './sprite.png';
+       canvas.style.border = '1px solid black';
+       canvas.setAttribute('width', '360');
+       canvas.setAttribute('height', '640');
+
+       document.addEventListener('DOMContentLoaded', function() {
+           document.body.appendChild(spritesImg);
+           document.body.appendChild(canvas);
+       });
+
+ 
+    </script>
+    <script src="gaby-background.js"></script>
+    <script src="gaby-player.js"></script>
+    <script src="gaby-pipe.js"></script>
+    <script src="gaby-game.js"></script>
+</head>
+<body>
+    
+</body>
+</html>

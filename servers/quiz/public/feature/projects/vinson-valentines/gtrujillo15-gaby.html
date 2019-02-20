@@ -14,44 +14,39 @@
 <script src="../../../basic/basic.js"></script>
 <link rel="stylesheet" href="../../../basic/basic.css">
 <script id="inline-js">
-  let targetUser = null;
-  function sendMessage() {
+let targetUser = null;
+function sendMessage() {
+    if (!targetUser) return;
     const payload = {
-      if (!targetUser) return;
-      username: targetUser,
-      message: document.getElementsById('message').value,
+        username: targetUser,
+        message: document.getElementById('message').value,
     };
     socket.emit('send-message', payload);
-  
-  }
-  socket.on('server-sent-message', function {message}
-  socket.on('users', function (users) {
+}
+socket.on('server-sent-message', function (message){
+   console.log('server sent a message', message);
+   const messageUl = document.querySelector('message');
+   const li = document.createElement('li');
+   li.innerText = message;
+   messagesUl.appendChild(li);
+});
+socket.on('users', function (users) {
     console.log('users', users);
     const ul = document.getElementsByTagName('ul')[0];
     ul.innerHTML = '';
-    if (!ul.children.length) {
-      users.forEach ( user => {
-        const li= document.createElement('li');
+    users.forEach ( user => {
+        const li = document.createElement('li');
         ul.appendChild(li);
         li.innerHTML = JSON.stringify(user);
         li.user = user;
         li.addEventListener('click', function(){
-          console.log(this.user);
-          targetUser = this.user;
-          console.log('targetUser', Object.keys(targetUser));
+           console.log(this.user);
+           targetUser = Object.keys(this.user)[0];
+           console.log('targetUser', targetUser);
 
         })
-      })
-    }
-  })
+    });
+})
 
-  // const inputs = document.getElementsByTagName('input');
-  // function sendMessage() {
-  //   const payload = {
-  //     username: inputs[0].value,
-  //     message: inputs[1].value
-  //   };
-  //   socket.emit('send-message', payload)
-  // }
 </script>
 </html>
