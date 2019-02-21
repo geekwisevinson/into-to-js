@@ -1,39 +1,52 @@
 let skyColor = 'skyblue';
 let canvasWidth = 640;
 let canvasHeight = 640;
+const cloudImg = document.createElement('img');
+cloudImg.src = './images/cloud.png';
+
+const cloudImg5 = document.createElement('img');
+cloudImg5.src = './images/cloud5.png';
 
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
+console.log('image', cloudImg);
 
+const gameObjects = [];
+const cloudMultiplier = .3;
 
+makeClouds(5 * cloudMultiplier, cloudImg5);
+makeClouds(10 * cloudMultiplier, cloudImg);
+makeClouds(4  * cloudMultiplier, cloudImg5);
+makeClouds(5  * cloudMultiplier, cloudImg);
+makeClouds(2  * cloudMultiplier, cloudImg5);
+
+function makeClouds(q, img) {
+    if (!q || q < 1) {return}
+
+    for( let i = 0; i < q; i++) {
+        makeRandomCloud(img);
+    }
+}
+
+function makeRandomCloud(img) {
+    let x = Math.random() * canvasWidth;
+    let y = Math.random() * (canvasHeight / 3) - 50 ;
+    let w = (Math.random() * 150) * 2 + 50;
+    let h = (Math.random() * 120) * 2 + 40;
+    gameObjects.push(new Cloud(x, y, w, h, img));
+}
 
 function drawSky() {
     context.fillStyle = skyColor;
     context.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
-function drawCloud() {
-    context.beginPath();
-    context.moveTo(170, 80);
-    context.bezierCurveTo(130, 100, 130, 150, 230, 150);
-    context.bezierCurveTo(250, 180, 320, 180, 340, 150);
-    context.bezierCurveTo(420, 150, 420, 120, 390, 100);
-    context.bezierCurveTo(430, 40, 370, 30, 340, 50);
-    context.bezierCurveTo(320, 5, 250, 20, 250, 50);
-    context.bezierCurveTo(200, 5, 150, 20, 170, 80);
-    context.closePath();
-    context.lineWidth = 5;
-    context.fillStyle = 'white';
-    context.fill();
-    context.strokeStyle = '#8ED6FF';
-    context.stroke();
-}
-
 function gameLoop() {
-    context.clearRect(0, 0, canvasWidth, canvasHeight );
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawSky();
-    drawCloud()
-
+    gameObjects.forEach( obj => obj.update());
+    gameObjects.forEach( obj => obj.draw());
+    window.requestAnimationFrame(gameLoop);
 }
 
 gameLoop();
