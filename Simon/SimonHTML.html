@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Simon</title>
+    <style>
+        .div {
+            width: 15.625em;
+            height: 15.625em;
+            float: left;
+            border: 10px solid black;
+        }
+        .div2 {
+            width: 33.75em;
+            height: 3.125em;
+            background-color: black;    
+        }
+        .score {
+            color: white;
+            text-align: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 3.125em;
+        }
+        .wrapper {
+            height: 36.875em;
+            width: 33.75em;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="div2"><p id="score" class="score"></p></div>
+        <div id="greenBG" class="div"></div>
+        <div id="redBG" class="div"></div>
+        <div id="yellowBG" class="div"></div>
+        <div id="blueBG" class="div"></div>
+    </div>
+
+    <audio id="greenSound" src="./green.mp3"></audio>
+    <audio id="redSound" src="./red.wav"></audio>
+    <audio id="yellowSound" src="./yellow.wav"></audio>
+    <audio id="blueSound" src="./blue.wav"></audio>
+
+
+    <script src="simon-targeting.js"></script>
+    <script src="simon-simon.js"></script>
+    <script src="simon-player.js"></script>
+    <script src="simon-game.js"></script>
+</body>
+</html>
