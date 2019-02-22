@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+    <style>
+        .username, .password {
+            width: 240px;
+            display: flex;
+        }
+
+        .username > * , .password > * { flex: 1; margin-top: 4px}
+        .password button {
+            padding: 4px;
+        }
+
+        .sign-login > * {
+            margin: 0 auto;
+        }
+
+        #error {
+            background: red;
+            color: whitesmoke;
+        }
+        h1 {text-align: center}
+        button {
+            margin-left: 1em;
+        }
+    </style>
+</head>
+<body>
+<h1>Pages</h1>
+
+<input type="text" id="newFile" placeholder="file name">
+<button onclick="addPage()">+</button>
+<div>
+    <h3>Pages</h3>
+    <ul id="pages-ul">
+    </ul>
+</div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
+<link rel="stylesheet" href="../../../basic/basic.css">
+<script>
+    const path = window.location.href.split('/').pop();
+    socket.on('server-sent-data-pages', (pages) => {
+        const pagesUl = document.querySelector('#pages-ul');
+        pagesUl.innerHTML = '';
+        pages.forEach( page => {
+            const shortName = page.substring(0, page.indexOf('.html'));
+            const a = document.createElement('a');
+            const li = document.createElement('li');
+            const hrefArray = window.location.href.split('/');
+            const project = hrefArray[hrefArray.length - 1];
+            a.appendChild(document.createTextNode(page));
+            li.appendChild(a);
+            a.setAttribute('href', '/live/'+ project + '/' + shortName);
+            pagesUl.appendChild(li);
+            const button = document.createElement('button');
+            li.appendChild(button);
+            button.innerText = 'edit';
+            // action
+            button.addEventListener('click', function () {
+                socket.emit('request-server-for-redirect', 'editor/'+ project + '/' + shortName);
+            });
+        });
+    });
+
+    console.log('location', path );
+    socket.emit('request-server-for-pages', `${path}`);
+    setInterval(() => {
+        socket.emit('request-server-for-pages', `${path}`);
+
+    }, 2000);
+    function addPage() {
+        const file = `${myUser.username}-${document.getElementById('newFile').value}`;
+        document.getElementById('newFile').value = '';
+        socket.emit('request-server-add-page', `${path}/${file}`);
+    }
+</script>
+</html>

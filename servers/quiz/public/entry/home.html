@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+    <style>
+        .username, .password {
+            width: 240px;
+            display: flex;
+        }
+        .username > * , .password > * { flex: 1; margin-top: 4px}
+        .password button {
+            padding: 4px;
+        }
+        .sign-login > * {
+            margin: 0 auto;
+        }
+        #error {
+            background: red;
+            color: whitesmoke;
+        }
+        h1 {text-align: center}
+    </style>
+</head>
+<body>
+
+
+    <h1>Quizzers</h1>
+    <div class="sign-login">
+        <div class="username"><span>username:</span> <span><input id="username" type="text"></span></div>
+        <div class="password"><span>password:</span> <span><input id="password" type="text"></span></div>
+        <div class="password">
+            <button onclick="signUp()">SignUp</button> <button  onclick="login()">Login</button>
+        </div>
+    </div>
+    <div id="users-div">
+        <ul id="users-ul">
+        </ul>
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
+<link rel="stylesheet" href="../../../basic/basic.css">
+<script>
+
+    socket.on('server-sent-login', ({username, token}) => {
+        socket.emit('request-server-for-redirect', 'projects')
+    });
+
+
+    function signUp() {
+        const user = {
+            username: document.querySelector('#username').value,
+            password: document.querySelector('#password').value,
+        };
+        if (user.password.length < 3 || user.username.length < 3) {
+            alert('username and password have to be at least 3 characters');
+        }
+        console.log('user', user);
+        socket.emit('client-would-like-to-sign-up', user);
+    }
+
+    function login() {
+        const user = {
+            username: document.querySelector('#username').value,
+            password: document.querySelector('#password').value,
+        };
+
+        if (user.password.length < 3 || user.username.length < 3) {
+            alert('username and password have to be at least 3 characters');
+        }
+        console.log('user', user);
+        socket.emit('client-would-like-to-login', user);
+    }
+</script>
+</html>

@@ -1,0 +1,201 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+
+    <style>
+
+        .online {
+            color: orangered;
+        }
+
+        .offline {
+            color: grey;
+        }
+
+        .selected-user {
+            font-size: 2em;
+            font-weight: bolder;
+            color: purple;
+        }
+
+        .main {
+            width: 230px;
+            height: 429px;
+            border: 5px solid purple;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+            overflow: auto;
+            float: right;
+        }
+
+        .main2 {
+            width: 755px;
+            height: 400px;
+            border: 5px solid purple;
+            border-right: hidden;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+            overflow: auto;
+            float: left;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .wrapper {
+            width: 1000px;
+        }
+
+        .input {
+            width: 650px;
+            height: 20px;
+            border: 5px solid purple;
+            border-top: hidden;
+            padding: 2px;
+            float: left;
+        }
+
+        .button {
+            width: 92px;
+            height: 20px;
+            border: 5px solid purple;
+            border-top: hidden;
+            border-right: hidden;
+            border-left: hidden;
+            padding: 2px;
+            float: left;
+            background-color: mediumpurple;
+            text-align: center;
+        }
+
+        .visible {
+        }
+
+        .invisible {
+            display: none;
+        }
+
+        .body {
+            font-family: sans-serif;
+            font-weight: 100;
+        }
+    </style>
+</head>
+<body class="body">
+    <!--HTML-->
+    <div class="wrapper">
+        <div class="main">
+            <ul id="users"></ul>
+        </div>
+        <div class="main2">
+            <ul id="messages"></ul>
+        </div>
+            <input class="input" id="message" type="text" placeholder="message">
+            <div class="button" onclick="sendMessage()">SEND</div>
+    </div>  
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
+<script id="inline-js">
+    // variable to hold user to send message to
+    let targetUser = null;
+    // function that is called when the button send message is clicked
+    function sendMessage() {
+        // if No user is selected stop the function
+        if (!targetUser) return;
+        // create a object that contains everything we want to send to the server
+        const payload = {
+            username: targetUser,
+            message: document.getElementById('message').value,
+            sender: myUser.username,
+        };
+        console.log('payload', payload);
+
+        //   *** Added ***
+        //Prevents sending empty messages
+        if (document.getElementById('message').value === '') return;
+
+        // send the message through the socket that is connected
+        socket.emit('send-message', payload);
+
+        //   *** Added ***
+        //Clears the value of the input field
+        document.getElementById('message').value = null;
+
+
+    }
+    // listen for the server to send "server-sent-message" and define a function to  run
+    socket.on('server-sent-message', function (message, sender) {
+        console.log('server sent a message', message);
+        // get ul for messages
+        const messageUl = document.querySelector('#messages');
+        // create li to place in ul
+        const li = document.createElement('li');
+        // write text to li
+        li.innerText = `${sender} -- ${message}`;
+        // place the li in the message ul
+        messageUl.appendChild(li);
+        showSelectedMessage()
+    });
+    // listens for 'users' and define a function to list all users
+    socket.on('users', function (users) {
+        console.log('users', users);
+        const ul = document.getElementsByTagName('ul')[0];
+        // ul gets reset each time new users are sent
+        ul.innerHTML = '';
+        // for each through every user
+        users.forEach(user => {
+            const li = document.createElement('li');
+            ul.appendChild(li);
+            // Use JSON to stringify user
+            const userName = Object.keys(user)[0];
+            li.innerHTML = Object.keys(user)[0];
+            li.classList.add(user[userName] ? 'online' : 'offline');
+            li.user = user;
+
+            if (targetUser && Object.keys(li.user)[0] === targetUser) {
+                li.classList.add('selected-user');
+            }
+            li.addEventListener('click', function () {
+                console.log(this.user);
+                document.querySelectorAll('#users li').forEach(l => {
+                    l.classList.remove('selected-user');
+                });
+                this.classList.add('selected-user')
+                // the object has 1 key which is the username, so we grab the first key
+                // and place it in the target user variable
+                targetUser = Object.keys(this.user)[0];
+                console.log('targetUser', targetUser);
+                showSelectedMessage()
+            })
+        });
+    })
+
+    function showSelectedMessage() {
+        document.querySelectorAll('#messages li').forEach(ml => {
+            if (!ml.textContent.includes(targetUser)) {
+                ml.classList.add('invisible');
+                ml.classList.remove('visible');
+            } else {
+                ml.classList.remove('invisible');
+                ml.classList.add('visible');
+            }
+        });
+
+
+        //   *** Added ***
+        //Listens for the enter key to be pressed to send the message
+        document.addEventListener("keydown", (e) => {
+            if (e.code === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+    }
+</script>
+</html>

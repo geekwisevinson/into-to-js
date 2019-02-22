@@ -1,0 +1,89 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+@import url(https://fonts.googleapis.com/css?family=Exo+2:400,600,700);
+:root{
+    --color-first: #00293c;
+    --color-second: #1e656d;
+    --color-third: #f62a00;
+    --color-fourth: #f1f3ce;
+    --font-family-first: 'Open Sans', sans-serif;
+    --font-family-second: 'Exo 2', sans-serif;
+    --color-gradient-three-two: linear-gradient(to bottom, var(--color-third) 0%, var(--color-second) 100%);
+}
+/* General Buttons */
+button {
+    height: 2em;
+    background: var(--color-gradient-three-two);
+    border: none;
+    text-align: left;
+    margin: .3em;
+    border-radius: 5px;
+    position: relative;
+    border-bottom: 4px solid var(--color-first);
+    color: #fbfbfb;
+    font-weight: 600;
+    font-family: var(--font-family-second);
+    text-shadow: 1px 1px 1px rgba(0,0,0,.4);
+    font-size: 15px;
+    text-indent: .1em;
+    box-shadow: 0px 3px 0px 0px rgba(0,0,0,.2);
+    text-transform: capitalize;
+    cursor: pointer;
+}
+button:active {
+    box-shadow: 0px 2px 0px 0px rgba(0,0,0,.2);
+    top: 1px;
+}
+
+/* Button pointing left */
+
+button.back {
+    text-align: right;
+    padding-right: 12px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-family: var(--font-family-second);
+}
+
+#logged-in {
+    font-family: var(--font-family-second);
+    color: var(--color-fourth);
+    text-transform: capitalize;
+}
+
+/* unvisited link */
+a:link {
+    font-family: var(--font-family-first);
+    margin-bottom: .2em;
+    text-decoration: none;
+    color: var(--color-first);
+}
+
+/* visited link */
+a:visited {
+    font-family: var(--font-family-first);
+    margin-bottom: .2em;
+    text-decoration: none;
+    color: var(--color-third);
+}
+
+/* mouse over link */
+a:hover {
+    font-family: var(--font-family-first);
+    margin-bottom: .2em;
+    text-decoration: none;
+    color: var(--color-second);
+}
+
+/* selected link */
+a:active {
+    font-family: var(--font-family-first);
+    margin-bottom: .2em;
+    text-decoration: none;
+    color: var(--color-first);
+}
+
+input {
+    font-size: 1.1em;
+}

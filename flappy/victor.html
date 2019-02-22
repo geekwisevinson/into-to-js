@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script>
+  <title>Title</title>
+<script>
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const spritesImg = document.createElement('img');
+
+    spritesImg.src = './sprite.png';
+    canvas.style.border = '1px solid black';
+    canvas.setAttribute('width', '360');
+    canvas.setAttribute('height', '640');
+    context.drawImage(spritesImg, 0, 0, 360, 640, 0, 0, 440, 640);
+    context.drawImage(spritesImg, 360, 80, 80, 70, 0, 0, 80, 70);
+    document.addEventListener('DOMContentLoaded', function() {
+        document.body.appendChild(spritesImg);
+        document.body.appendChild(canvas);
+    });
+
+    function gameLoop() {
+        context.drawImage(spritesImg, 0, 0, 360, 640, 0, 0, 440, 640);
+        context.drawImage(spritesImg, 360, 80, 80, 70, 0, 0, 80, 70);
+        window.requestAnimationFrame(gameLoop);
+    }
+    gameLoop();
+  </script>
+  <script src="victor-background.js" </script>
+  <script src+"victor-game.js"></script>
+</head>
+<body>
+
+</body>
+</html>

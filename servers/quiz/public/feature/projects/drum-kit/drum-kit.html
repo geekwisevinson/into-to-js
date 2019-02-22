@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+</head>
+<body>
+    <div class="keys">
+        <div class="key" data-key="65">
+            <kbd>A</kbd>
+            <div class="sound">clap</div>
+        </div>
+        <div class="key" data-key="83">
+            <kbd>S</kbd>
+            <div class="sound">kick</div>
+        </div>
+    </div>
+    <audio data-key="65" src="../../../feature/projects/drum-kit/sounds/clap.mp3"></audio>
+    <audio data-key="83" src="../../../feature/projects/drum-kit/sounds/kick.mp3"></audio>
+    <style>
+        body, html {
+            height: 100%;
+            background: url('https://i.ytimg.com/vi/P6XB-KXvZJ8/maxresdefault.jpg') no-repeat;
+            background-size: cover;
+        }
+        .keys {
+            display: flex;
+            justify-content: space-evenly;
+            padding: 40px;
+            height: 400px;
+        }
+        .key {
+            display: inline-block;
+            border: black 2px solid;
+            padding: 10px;
+            height: 40px;
+            border-radius: 5px;
+            text-align: center;
+            vertical-align: center;
+
+        }
+        .playing {
+            border: yellowgreen 3px solid;
+            transition: all 100ms ease;
+            transform: scale(1.1);
+        }
+
+        kbd {
+            font-weight: bolder;
+        }
+        .sound {
+        	color: red;
+        }
+    </style>
+    
+</body><script src="/socket.io/socket.io.js"></script><script src="../../../basic/basic.js"></script><script id="inline-js"></script></html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        const sprite = document.createElement('img');
+        const swipeAudio = document.createElement('audio');
+        const goodAudio = document.createElement('audio');
+        const splatAudio = document.createElement('audio');
+        swipeAudio.setAttribute('src', './swipe.mp3');
+        goodAudio.setAttribute('src', './good.mp3');
+        splatAudio.setAttribute('src', './splat.mp3');
+        sprite.setAttribute('src', './sprite.png');
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.style.border = '1px solid black';
+        canvas.setAttribute('width', '360');
+        canvas.setAttribute('height', '640');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.appendChild(sprite);
+            document.body.appendChild(canvas)
+        });
+    </script>
+    <script src="background.js"></script>
+    <script src="player.js"></script>
+    <script src="pipe.js"></script>
+    <script src="game.js"></script>
+</head>
+<body>
+</body>
+</html>

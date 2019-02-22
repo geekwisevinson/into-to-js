@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+</head>
+<body>
+  <!-- HTML -->
+  <input id ="message" type="text" placeholders="user">
+  <input type="text" placeholder="message">
+  <button onclick="sendMessage()">Send Message</button>
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
+<link rel="stylesheet" href="../../../basic/basic.css">
+<script id="inline-js">
+let targetUser = null;
+function sendMessage() {
+    if (!targetUser) return;
+    const payload = {
+        username: targetUser,
+        message: document.getElementById('message').value,
+    };
+    socket.emit('send-message', payload);
+}
+socket.on('server-sent-message', function (message){
+   console.log('server sent a message', message);
+   const messageUl = document.querySelector('message');
+   const li = document.createElement('li');
+   li.innerText = message;
+   messagesUl.appendChild(li);
+});
+socket.on('users', function (users) {
+    console.log('users', users);
+    const ul = document.getElementsByTagName('ul')[0];
+    ul.innerHTML = '';
+    users.forEach ( user => {
+        const li = document.createElement('li');
+        ul.appendChild(li);
+        li.innerHTML = JSON.stringify(user);
+        li.user = user;
+        li.addEventListener('click', function(){
+           console.log(this.user);
+           targetUser = Object.keys(this.user)[0];
+           console.log('targetUser', targetUser);
+
+        })
+    });
+})
+
+</script>
+</html>

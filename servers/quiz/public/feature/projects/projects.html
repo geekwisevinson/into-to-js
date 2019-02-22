@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzer</title>
+    <style>
+
+
+    </style>
+    <style>
+        .username, .password {
+            width: 240px;
+            display: flex;
+        }
+        .username > * , .password > * { flex: 1; margin-top: 4px}
+        .password button {
+            padding: 4px;
+        }
+        .sign-login > * {
+            margin: 0 auto;
+        }
+        #error {
+            background: red;
+            color: whitesmoke;
+        }
+        h1 {text-align: center}
+        button {
+            margin-left: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="logged-in"></div>
+    <div id="error"></div>
+    <h1>Projects</h1>
+    <input type="text" id="newFile" placeholder="file name">
+    <button onclick="addProject()">+</button>
+    <div>
+        <ul id="folders-ul">
+
+        </ul>
+    </div>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../../basic/basic.js"></script>
+<link rel="stylesheet" href="../../../basic/basic.css">
+<script>
+
+    socket.on('server-sent-data-folders', (folders) => {
+        const foldersUl = document.querySelector('#folders-ul');
+        foldersUl.innerHTML = '';
+        folders.forEach( folder => {
+            const a = document.createElement('a');
+            const li = document.createElement('li');
+            a.appendChild(document.createTextNode(folder));
+            li.appendChild(a);
+            a.setAttribute('href', 'projects/' + folder);
+            foldersUl.appendChild(li);
+            a.classList.add('link');
+        });
+    });
+
+    socket.emit('request-server-for-folders', '');
+    setInterval(() => {
+        socket.emit('request-server-for-folders', '');
+    }, 5000);
+    function addProject() {
+        const file = `${myUser.username}-${document.getElementById('newFile').value}`;
+        document.getElementById('newFile').value = '';
+        console.log('add new project named', file);
+        socket.emit('request-server-add-project', file);
+    }
+</script>
+</html>
