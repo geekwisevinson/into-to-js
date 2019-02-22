@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loops</title>
+    <style>
+        li {
+            margin: 20px;
+        }
+        pre, div {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Loops
+    </h1>
+<ul>
+    <li><code class="w3-codespan">for</code> - loops through a block of code a number of times
+        <div>Skeleton</div>
+        <pre>
+            for (statement 1; statement 2; statement 3) {
+            // code block to be executed
+            }
+        </pre>
+        <div>Example</div>
+        <pre>
+            for (i = 0; i < cars.length; i++) {
+                text += cars[i] + i;
+            }
+        </pre>
+    </li>
+    <li><code class="w3-codespan">for/in</code> - loops through the properties of an object
+        <div>Skeleton</div>
+        <pre>
+            for (variable in ArrayLike) {
+                text += person[x];
+            }
+        </pre>
+        <div>Example</div>
+        <pre>
+            var person = {fname:"John", lname:"Doe", age:25};
+            var text = "";
+            var x;
+            for (x in person) {
+                text += person[x];
+            }
+        </pre>
+    </li>
+    <li><code class="w3-codespan">while</code> - loops through a block of code while a specified condition is true
+
+        <div>Skeleton</div>
+        <pre>
+            while (condition) {
+                // code block to be executed
+            }
+        </pre>
+        <div>Example</div>
+        <pre>
+            while (i < 10) {
+                text += "The number is " + i;
+                i++;
+            }
+        </pre>
+    </li>
+    <li><code class="w3-codespan">do/while</code> - also loops through a block of code while a specified condition is true
+        <div>Skeleton</div>
+        <pre>
+            do {
+                // code block to be executed
+            }
+            while (condition);
+        </pre>
+        <div>Example</div>
+        <pre>
+            do {
+                text += "The number is " + i;
+                i++;
+            }
+            while (i < 10);
+        </pre>
+    </li>
+</ul>
+
+
+
+</body>
+</html>
