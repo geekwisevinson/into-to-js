@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Day Eleven</title>
-  <script>
-       const canvas = document.createElement('canvas');
-       const context = canvas.getContext('2d');
-       const spritesImg = document.createElement('img');
+    <meta charset="UTF-8">
+    <title>Flappy Game by Will</title>
+    <script>
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const spritesImg = document.createElement('img');
+        const swipeAudio = document.createElement('audio');
+        swipeAudio.src = './swipe.mp3';
+        const goodAudio = document.createElement('audio');
+        goodAudio.src = './good.mp3';
+        const badAudio = document.createElement('audio');
+        badAudio.src = './splat.mp3';
 
-       spritesImg.src = './sprite.png';
-       canvas.style.border = '1px solid black';
-       canvas.setAttribute('width', '360');
-       canvas.setAttribute('height', '640');
-       context.drawImage(spritesImg, 0, 0, 360, 640, 0, 0, 440, 640);
-       context.drawImage(spritesImg, 360, 80, 80, 70, 0, 0, 80, 70);
-       document.addEventListener('DOMContentLoaded', function() {
-           document.body.appendChild(spritesImg);
-           document.body.appendChild(canvas);
-       });
+        spritesImg.src = './sprite.png';
+        canvas.style.border = '1px solid black';
+        canvas.setAttribute('width', '360');
+        canvas.setAttribute('height', '640');
 
-       function gameLoop() {
-           context.drawImage(spritesImg, 0, 0, 360, 640, 0, 0, 440, 640);
-           context.drawImage(spritesImg, 360, 80, 80, 70, 0, 0, 80, 70);
-           window.requestAnimationFrame(gameLoop)
-       }
-       gameLoop();
-   </script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.appendChild(spritesImg);
+            document.body.appendChild(canvas);
+        });
+
+
+    </script>
+    <script src="willbackground.js"></script>
+    <script src="willplayer.js"></script>
+    <script src="willpipe.js"></script>
+    <script src="willgame.js"></script>
 </head>
 <body>
-
+<h1>Flappy Game</h1>
+<footer>Open Source not protected <a href="htttp://riker17.com" target="_blank">Will Robertson</a></footer>
 </body>
 </html>
