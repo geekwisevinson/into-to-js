@@ -7,6 +7,9 @@ cloudImg.src = './images/cloud.png';
 const cloudImg5 = document.createElement('img');
 cloudImg5.src = './images/cloud5.png';
 
+const sandImg = document.createElement('img');
+sandImg.src = './images/sand.png';
+
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 console.log('image', cloudImg);
@@ -19,7 +22,9 @@ makeClouds(10 * cloudMultiplier, cloudImg);
 makeClouds(4  * cloudMultiplier, cloudImg5);
 makeClouds(5  * cloudMultiplier, cloudImg);
 makeClouds(2  * cloudMultiplier, cloudImg5);
+gameObjects.push(new Sand(0, canvasHeight / 2, canvasWidth, canvasHeight/ 2, sandImg));
 
+gameObjects.push(new Sand(canvasWidth, canvasHeight / 2, canvasWidth, canvasHeight/ 2, sandImg));
 function makeClouds(q, img) {
     if (!q || q < 1) {return}
 

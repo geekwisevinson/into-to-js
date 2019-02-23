@@ -16,6 +16,13 @@ class GameObject {
     }
 
     draw() {
+        // context.fillStyle = 'pink';
+        // context.fillRect(
+        //     this.x,
+        //     this.y,
+        //     this.w,
+        //     this.h,
+        // );
         context.drawImage(
             this.sprite,
             this.source.x,
@@ -27,6 +34,8 @@ class GameObject {
             this.w,
             this.h,
         );
+
+
     }
 
     test() {
