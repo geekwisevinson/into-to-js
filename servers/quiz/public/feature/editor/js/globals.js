@@ -31,9 +31,9 @@ let currentState = {
 
 
 const html1 = createCM( document.querySelector('#html'), 'html', 'html1');
-const html2 = createCM( document.querySelector('#html'), 'html', 'html1');
-const js1 = createCM( document.querySelector('#html2'), 'js', 'js1');
-const js2 = createCM( document.querySelector('#html2'), 'js', 'js2');
+const html2 = createCM( document.querySelector('#htm2'), 'html', 'html1');
+const js1 = createCM( document.querySelector('#javascript'), 'js', 'js1');
+const js2 = createCM( document.querySelector('#javascript2'), 'js', 'js2');
 
 html1.on('keyup', this.changeDetectedCm);
 html1.on('mousedown', this.mouseDownDetectedCm)
