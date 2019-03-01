@@ -36,8 +36,13 @@ const js1 = createCM( document.querySelector('#javascript'), 'js', 'js1');
 const js2 = createCM( document.querySelector('#javascript2'), 'js', 'js2');
 
 html1.on('keyup', this.changeDetectedCm);
-html1.on('mousedown', this.mouseDownDetectedCm)
-
+html1.on('mousedown', this.mouseDownDetectedCm);
+js1.on('keyup', this.changeDetectedCm);
+js1.on('mousedown', this.mouseDownDetectedCm);
+html2.on('keyup', this.changeDetectedCm);
+html2.on('mousedown', this.mouseDownDetectedCm);
+js2.on('keyup', this.changeDetectedCm);
+js2.on('mousedown', this.mouseDownDetectedCm);
 
 function createCM(el, type, name) {
     const htmlConfig = {
